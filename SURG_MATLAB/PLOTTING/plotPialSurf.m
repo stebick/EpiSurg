@@ -179,7 +179,7 @@
 %     figId                -Handle of figure in which to make plot.
 %                           {default: new figure created}
 %     clearFig             -'y' or 'n'; If 'y', the figured is cleared
-%                           before the plot is created. {default: 'y??'}
+%                           before the plot is created. {default: 'y'}
 %     backgroundColor      -Standard Matlab color argument (e.g., 'k' or
 %                           [.1 .5 .3]). The axis background color.
 %                           {default: not used}
@@ -298,6 +298,7 @@
 % is automatically derived
 % dg 6/15 now expects electrode coordinates and names in YangWang method format
 % dg 9/15 elecSize now properly modulates sphere
+% As of 2016, revision history will be kept on GitHub
 
 
 %% TO DO
@@ -472,16 +473,37 @@ if overlayParcellation,
     if strcmpi(overlayParcellation,'DK')
         annotFname=[labelFolder side 'h.aparc.annot']; %Desikan-Killiany 36 area atlas
         [averts,albl,actbl]=read_annotation(annotFname);
+        actbl.table(1,1:3)=255*[1 1 1]*.7; %make medial wall the same shade of grey as functional plots
     elseif strcmpi(overlayParcellation,'D')
         annotFname=[labelFolder side 'h.aparc.a2009s.annot']; %Destrieux 76 area atlas
         [averts,albl,actbl]=read_annotation(annotFname);
         actbl.table(43,1:3)=255*[1 1 1]*.7; %make medial wall the same shade of grey as functional plots
     elseif strcmpi(overlayParcellation,'Y7')
-        annotFname=[labelFolder side 'h.Yeo2011_7Networks_N1000.annot']; % Yeo et al. 2011
-        [averts,albl,actbl]=read_annotation(annotFname);
+        if strcmpi(fsSub,'fsaverage')
+            annotFname=[labelFolder side 'h.Yeo2011_7Networks_N1000.annot']; % Yeo et al. 2011
+            [averts,albl,actbl]=read_annotation(annotFname);
+        else
+            annotFname=[labelFolder side 'h_Yeo2011_7Networks_N1000.mat']; % Yeo et al. 2011
+            load(annotFname);
+            averts=vertices;
+            albl=label;
+            actbl=colortable;
+            clear colortable label vertices
+            actbl.table(1,1:3)=255*[1 1 1]*.7; %make medial wall the same shade of grey as functional plots
+        end
     elseif strcmpi(overlayParcellation,'Y17')
-        annotFname=[labelFolder side 'h.Yeo2011_17Networks_N1000.annot']; % Yeo et al. 2011
-        [averts,albl,actbl]=read_annotation(annotFname);
+        if strcmpi(fsSub,'fsaverage')
+            annotFname=[labelFolder side 'h.Yeo2011_17Networks_N1000.annot']; % Yeo et al. 2011
+            [averts,albl,actbl]=read_annotation(annotFname);
+        else
+            annotFname=[labelFolder side 'h_Yeo2011_17Networks_N1000.mat']; % Yeo et al. 2011
+            load(annotFname);
+            %averts=vertices;
+            albl=label;
+            actbl=colortable;
+            clear colortable label vertices
+            actbl.table(1,1:3)=255*[1 1 1]*.7; %make medial wall the same shade of grey as functional plots
+        end
     else
         error('overlayParcellation argument needs to take a value of ''D'',''DK'',''Y7'', or ''Y17''.');
     end
@@ -497,7 +519,7 @@ if overlayParcellation,
     clear averts;
     [~,locTable]=ismember(albl,actbl.table(:,5));
     locTable(locTable==0)=1; % for the case where the label for the vertex says 0
-    fvcdat=actbl.table(locTable,1:3)./255;
+    fvcdat=actbl.table(locTable,1:3)./255; %scale RGB values to 0-1
     clear locTable;
     hTsurf=trisurf(cort.tri, cort.vert(:, 1), cort.vert(:, 2), cort.vert(:, 3),...
         'FaceVertexCData', fvcdat,'FaceColor', 'interp','FaceAlpha',1);
@@ -582,7 +604,7 @@ end
 alpha(opaqueness);
 
 
-%% PLOT ELECTRODES (optional) ?? Pick up here
+%% PLOT ELECTRODES (optional)
 elecSphere=0; %default
 if universalNo(elecCoord)
     verbReport('...not plotting electrodes',2,verbLevel);
@@ -927,7 +949,11 @@ if universalYes(clearGlobal)
     clear global cbarMin cbarMax cort;
 end
 
-catch
+catch err
+    disp(err.identifier);
+    disp(err.message);
+    disp(err.stack.file);
+    fprintf('Line: %d\n',err.stack.line);
     % Delete global variables if function crashes to prevent them from
     % being automatically used the next time plotPialSurf is called.
     clear global cbarMin cbarMax cort;
