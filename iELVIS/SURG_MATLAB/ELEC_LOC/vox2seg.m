@@ -1,5 +1,5 @@
-function anatLabel=vox2aseg(coordILA,fsSub)
-%function anatLabel=vox2aseg(coordILA,fsSub)
+function anatLabel=vox2Seg(coordILA,fsSub)
+%function anatLabel=vox2Seg(coordILA,fsSub)
 %
 % Inputs:
 %  coordILA - 3D vector indicating the coordinates of a voxel in a
@@ -15,23 +15,15 @@ function anatLabel=vox2aseg(coordILA,fsSub)
 %
 %  Example:
 %  >>coordILA=[147 144 115];
-%  >>anatLabel=vox2aseg(coordILA,'NiAs')
+%  >>anatLabel=vox2Seg(coordILA,'NiAs')
 %
 % Author: David M. Groppe
 % Feb. 2015
 % Feinstein Institute for Medical Research/Univ. of Toronto
 
 % Load aseg volume
-global global_fs_dir;
-if ~isempty(global_fs_dir)
-    fsdir=global_fs_dir;
-else
-    if ispc,
-        error('Hey mon, if you be using Windows you need to be specifying global variable global_fs_dir.');
-    else
-        fsdir=getenv('SUBJECTS_DIR');
-    end
-end
+fsdir=getFsurfSubDir();
+
 %asegFname=[fsdir '/' fsSub '/mri/aseg.mgz'];
 asegFname=[fsdir '/' fsSub '/mri/aparc+aseg.mgz'];
 %asegFname=[fsdir '/' fsSub '/mri/aparc.a2009s+aseg.mgz'];
