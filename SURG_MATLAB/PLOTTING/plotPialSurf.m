@@ -485,7 +485,6 @@ if overlayParcellation,
         else
             annotFname=[labelFolder side 'h_Yeo2011_7Networks_N1000.mat']; % Yeo et al. 2011
             load(annotFname);
-            averts=vertices;
             albl=label;
             actbl=colortable;
             clear colortable label vertices
@@ -498,7 +497,6 @@ if overlayParcellation,
         else
             annotFname=[labelFolder side 'h_Yeo2011_17Networks_N1000.mat']; % Yeo et al. 2011
             load(annotFname);
-            %averts=vertices;
             albl=label;
             actbl=colortable;
             clear colortable label vertices
@@ -952,8 +950,10 @@ end
 catch err
     disp(err.identifier);
     disp(err.message);
-    disp(err.stack.file);
-    fprintf('Line: %d\n',err.stack.line);
+    for errLoop=1:length(err.stack),
+        disp(err.stack(errLoop).file); 
+        fprintf('Line: %d\n',err.stack(errLoop).line); 
+    end
     % Delete global variables if function crashes to prevent them from
     % being automatically used the next time plotPialSurf is called.
     clear global cbarMin cbarMax cort;
@@ -966,7 +966,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% subfunction ADD_NAME
+%% subfunction add_name
 function add_name(xyz,label,all_labels,markersize,rgb)
 % right now rgb argument is ignored, fix in the future so that electrode
 % names stand out from background? ??

@@ -2,206 +2,124 @@
 %                to FreeSurfer parcellations.
 %
 % Usage:
-%  >>elec_assign=elec2parc(subj,side);
+%  >>[elecParc, hem]=elec2parc(subj,format_names);
 %
-% Required Inputs:
-%  subj       -Name of the subject's freesurfer directory (full path not
-%              needed)
-%  side      -'r' or 'l', the hemisphere over which the electrodes are
-%             implanted
+% Required Input:
+%  subj      -Name of the subject's freesurfer directory (full path not
+%             needed)
+%
+% Optional Input:
+%  format_names -'y' or 'n'. If 'y' underscores are removed from electrode
+%                names and "Grid" is converted to "G". {default: 'n'}
 %
 % Output:
-%   elec_assign - 2D cell array containing electrode names and their
-%   assigned cortical area
+%   elecParc - 2D cell array containing electrode names and their
+%                 assigned cortical area
+%   hem         - 1D cell array indicating the hemisphere each electrode
+%                 is in
 %
 % Example:
-% >> elec_assign=elec2parc('AnRo','r');
+% >> elecParc=elec2parc('AnRo');
 %
-% Author: David Groppe
-% Mehtalab
-% Sept. 2012 
+% Author: David M. Groppe
 
-function elec_assign=elec2parc(subj,side)
+%
+% Future Work:
+% -I should have a function called neat_labels.m that will format the DK
+% atlas names to be more kind to the eye. It might help to incoporate that.
 
-fs_dir=getenv('SUBJECTS_DIR');
-surftype='pial';
-verblevel=2;
+function elecParc=elec2Parc(subj,atlas)
+
+if nargin<2,
+    atlas='DK';
+end
+
+fsDir=getFsurfSubDir();
+
+% ??
+warning('Groppe says: modifiy this to use add_depth_aseg_labels2ecog.m to take care of depths');
+
 
 % Folder with surface files
-surfacefolder=fullfile(fs_dir,subj,'surf');
-if ~isempty(surfacefolder) && (surfacefolder(end)~='/')
-    surfacefolder=[surfacefolder '/'];
+surfaceFolder=fullfile(fsDir,subj,'surf');
+if ~isempty(surfaceFolder) && (surfaceFolder(end)~='/')
+    surfaceFolder=[surfaceFolder '/'];
 end
 
 % Folder with cortical parcellation files
-labelfolder=fullfile(fs_dir,subj,'label');
-if ~isempty(labelfolder) && (labelfolder(end)~='/')
-    labelfolder=[labelfolder '/'];
+labelFolder=fullfile(fsDir,subj,'label');
+if ~isempty(labelFolder) && (labelFolder(end)~='/')
+    labelFolder=[labelFolder '/'];
 end
 
-% Get side of brain to show
-side=lower(side);
-if side~='l' && side~='r'
-    error('''side'' argument needs to be ''r'' or ''l''.');
-end
-
-
-%% READ SURFACE
-if side == 'r'
-    [cort.vert cort.tri]=read_surf([surfacefolder 'rh.' surftype]);
-else
-    [cort.vert cort.tri]=read_surf([surfacefolder 'lh.' surftype]);
-end
-
-%% Get cortical parcellation
-annot_fname=[labelfolder side 'h.aparc.annot'];
-[averts,albl,actbl]=read_annotation(annot_fname);
-neat_labels=format_annot_labels(actbl.struct_names);
-clear averts;
-fvcdat=ones(length(albl),3);
-ulvals=intersect(unique(albl),unique(actbl.table(:,5)));
-for ac=1:length(ulvals),
-    fvcdat(albl==ulvals(ac),1:3)=repmat(actbl.table((actbl.table(:,5)==ulvals(ac)),1:3),length(find(albl==ulvals(ac))),1)./255;
-end
-
-
-%% PLOT ELECTRODES (optional)
-VOX2RAS=[-1 0 0 128; 0 0 -1 128; 0 -1 0 128; 0 0 0 1];
-coord='yes';
-if universal_yes(coord), 
-    display('...Getting electrode coordinates. Taking *.PIALVOX from elec_recon folder.');
-    f=dir([fs_dir '/' subj '/elec_recon/*.PIALVOX']);
-    files4bothsides=0;
-    if length(f)>1,
-        if side=='l',
-            f=dir([fs_dir '/' subj '/elec_recon/*left.PIALVOX']);
-            files4bothsides=1;
-        else
-            f=dir([fs_dir '/' subj '/elec_recon/*right.PIALVOX']);
-            files4bothsides=1;
-        end
+% Import electrode locations
+pvoxFname=fullfile(fsDir,subj,'elec_recon',sprintf('%s.PIAL',subj));
+pvoxCoordStr=csv2Cell(pvoxFname,' ',2);
+nElec=size(pvoxCoordStr,1);
+pvoxCoord=zeros(nElec,3);
+for a=1:nElec,
+    for b=1:3,
+        pvoxCoord(a,b)=str2num(pvoxCoordStr{a,b});
     end
-    if length(f)>1,
-        error('To many possible PIALVOX files.  I do not know which to use.');
+end
+
+% Import electrode labels
+labelFname=fullfile(fsDir,subj,'elec_recon',sprintf('%s.electrodeNames',subj));
+elecLabels=csv2Cell(labelFname,' ',2);
+
+elecParc=cell(nElec,2);
+hem=[];
+for hemLoop=1:2,
+    if hemLoop==1
+        hem='L';
+    else
+        hem='R';
     end
-    coord=[fs_dir '/' subj '/elec_recon/' f(1).name];
     
-    if files4bothsides,
-        if side=='l',
-            temp=dir([fs_dir '/' subj '/elec_recon/*left.electrodeNames']);
-        else
-            temp=dir([fs_dir '/' subj '/elec_recon/*right.electrodeNames']);
+    %% Are there any electrodes in this hemisphere?
+    elecIdsThisHem=findStrInCell(hem,elecLabels(:,3));
+    nElecThisHem=length(elecIdsThisHem);
+    if nElecThisHem,
+        
+        %% READ SURFACE
+        surfFname=fullfile(surfaceFolder,[lower(hem) 'h.pial']);
+        [cort.vert, cort.tri]=read_surf(surfFname);
+        nVertex=length(cort.vert);
+        
+        %% Get cortical parcellation
+        switch upper(atlas)
+            case 'DK'
+                parcFname=fullfile(labelFolder,[lower(hem) 'h.aparc.annot']);
+                [~, label, colortable]=read_annotation(parcFname);
+                %[averts,label,colortable]=read_annotation(parcFname);
+            case 'D'
+                parcFname=fullfile(labelFolder,[lower(hem) 'h.aparc.a2009s.annot']);
+                [~, label, colortable]=read_annotation(parcFname);
+            case 'Y7'
+                parcFname=fullfile(labelFolder,[lower(hem) 'h_Yeo2011_7Networks_N1000.mat']);
+                load(parcFname);
+            case 'Y17'
+                parcFname=fullfile(labelFolder,[lower(hem) 'h_Yeo2011_17Networks_N1000.mat']);
+                load(parcFname);
+            otherwise
+                error('Unrecognized value of atlas argument.')
         end
-    else
-        temp=dir([fs_dir '/' subj '/elec_recon/*.electrodeNames']);
-    end
-    if length(temp)>1,
-        error('To many possible electrodeNames files.  I do not know which to use.');
-    end
-    enames_filename=[fs_dir '/' subj '/elec_recon/' temp(1).name];
-    fprintf('Attempting to read electrode names from file %s\n', ...
-        enames_filename);
-    fid=fopen(enames_filename,'r');
-    elec_names=textscan(fid,'%s');
-    fclose(fid);
-    elec_names=elec_names{1};
-    elec_names=format_elec_names(elec_names);
-end
-
-if exist(coord,'file') && findstr(coord,'PIALVOX')
-    VOX_coor=dlmread(coord);
-    VOX_coor=VOX_coor(:,2:4);
-    ispialvox=1;
-elseif isnumeric(coord)
-    if size(coord,2)==3
-        display(['...Electrode input is matrix with coordinates.']);
-        VOX_coor=coord;
-    else
-        error('...Electrode input is numeric but doesn''t have 3 coordinates');
-    end
-    ispialvox=0;
-end
-RAS_coor=(VOX2RAS*[VOX_coor'; ones(1, size(VOX_coor,1))])';
-
-% exclude depth electrodes
-if ispialvox==1
-    c=1; depth_ind=[];
-    for i=1:length(elec_names)
-        if ~isempty(strfind(lower(elec_names{i}),'depth')) || strcmpi(elec_names{i}(1),'d')
-            depth_ind(c)=i;
-            c=c+1;
-        end
-    end
-    if ~isempty(depth_ind),
-        fprintf('%d depth electrodes removed.\n',length(depth_ind));
-        RAS_coor(depth_ind,:)=[];
-        temp_elecnames=cell(1,1);
-        c=0;
-        for i=1:length(elec_names),
-            if ~ismember(i,depth_ind),
-                c=c+1;
-                temp_elecnames{c}=elec_names{i};
+        
+        for elecLoop=1:nElecThisHem,
+            elecParc{elecIdsThisHem(elecLoop),1}=elecLabels{elecIdsThisHem(elecLoop),1};
+            
+            % Go through and set depth electrode assignments to depth:
+            if elecLabels{elecIdsThisHem(elecLoop),2}=='D'
+                elecParc{elecIdsThisHem(elecLoop),2}='Depth'; % ?? fix this later
+            else
+                % Find closest vertex
+                [~, minId]=min(sum( (repmat(pvoxCoord(elecIdsThisHem(elecLoop),:),nVertex,1)-cort.vert).^2,2 ));
+                
+                % Grab parcellation label for that vertex
+                elecParc{elecIdsThisHem(elecLoop),2}=colortable.struct_names{find(colortable.table(:,5)==label(minId))};
             end
         end
-        elec_names=temp_elecnames;
-        clear temp_elecnames;
+        
     end
 end
-RAS_aft=RAS_coor(:,1:3);
-
-n_vert=size(cort.vert,1);
-elec_assign=cell(size(RAS_aft,1),2);
-for j = 1:size(RAS_aft,1)
-        abs_dist=sum(abs(repmat(RAS_aft(j,:),n_vert,1)-cort.vert),2);
-        [min_dist, min_vert_id]=min(abs_dist);
-        elec_rgb=fvcdat(min_vert_id,:)*255;
-        elec_color_id=elec_rgb*[1 2^8 2^16]'; 
-        table_id=find(actbl.table(:,5)==elec_color_id);
-        if isempty(table_id),
-            fprintf('Could not assign electrode %s to a cortical area, rgb: ',elec_names{j});
-            disp(elec_rgb);
-            fprintf('\n');
-            elec_assign{j,2}='Not Cerebral Cortex';
-        else
-            elec_assign{j,2}=neat_labels{table_id};
-            fprintf('%s: %s\n',elec_names{j},elec_assign{j,2});
-        end
-        elec_assign{j,1}=elec_names{j};
-end
-
-
-%%%% END OF MAIN FUNCTION %%%%
-
-
-%%%% HELPER FUNCTIONS %%%%
-function Y = get_loc_snap_mgh(electrodes,cortex,side,surfacefolder)
-% by adykstra
-
-%read smoothed surfaces into matlab
-[cortex.lh.vert, cortex.lh.tri] = read_surf([surfacefolder '/lh.pial-outer-smoothed']);
-[cortex.rh.vert, cortex.rh.tri] = read_surf([surfacefolder '/rh.pial-outer-smoothed']);
-
-if side == 'l'
-    vert_cart = cortex.lh.vert;
-elseif side == 'r'
-    vert_cart = cortex.rh.vert;
-end
-
-%loop over electrodes
-for i = 1:max(size(electrodes))
-    
-    b_x = (vert_cart(:,1)-electrodes(i,1)).^2;
-    b_y = (vert_cart(:,2)-electrodes(i,2)).^2;
-    b_z = (vert_cart(:,3)-electrodes(i,3)).^2;
-    
-    temp = sqrt(b_x + b_y + b_z);
-    [temp, index] = min(temp);
-    clear temp*
-    
-    %Cartesian Coordiantes, assign electrode location to closest vertex
-    x_new(i) = vert_cart(index,1);
-    y_new(i) = vert_cart(index,2);
-    z_new(i) = vert_cart(index,3);
-end
-Y = [x_new' y_new' z_new'];
 
