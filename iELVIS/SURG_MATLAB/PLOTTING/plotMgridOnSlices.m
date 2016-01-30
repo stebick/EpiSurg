@@ -114,7 +114,9 @@ for elecId=1:nElec,
         %keep image square
         tempMin=min([limXa limYa]);
         tempMax=max([limXb limYb]);
-        axis([tempMin tempMax tempMin tempMax]);
+        if tempMin<tempMax, 
+            axis([tempMin tempMax tempMin tempMax]); 
+        end
         set(gca,'xtick',[],'ytick',[]);
         
         %subplot(132);
@@ -134,7 +136,9 @@ for elecId=1:nElec,
         %keep image square
         tempMin=min([limXa limYa]);
         tempMax=max([limXb limYb]);
-        axis([tempMin tempMax tempMin tempMax]);
+        if tempMin<tempMax,
+            axis([tempMin tempMax tempMin tempMax]);
+        end
         set(gca,'xtick',[],'ytick',[],'xdir','reverse');
         
         
@@ -155,7 +159,9 @@ for elecId=1:nElec,
         %keep image square
         tempMin=min([limXa limYa]);
         tempMax=max([limXb limYb]);
-        axis([tempMin tempMax tempMin tempMax]);
+        if tempMin<tempMax,
+            axis([tempMin tempMax tempMin tempMax]);
+        end
         set(gca,'xtick',[],'ytick',[]);
         
         anatLabel=vox2seg(xyz(elecId,:),fsSub);
