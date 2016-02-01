@@ -6,7 +6,8 @@ function makeIniLocTxtFile(fsSub)
 %
 % Create a text file of elec coordinates (in voxel space) readable by Wang, Yang or Dykstra
 % brain shift correctioncode. The file is called *PostimpLoc.txt and is the
-% the elec_recon subfolder of the patient's FreeSurfer directory.
+% the elec_recon subfolder of the patient's FreeSurfer directory. Note that
+% coordinates start at 0 (not 1) and are in the order R->L, S->I, A->P
 %
 % Author: David M. Groppe
 % June, 2015
