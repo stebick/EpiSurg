@@ -124,11 +124,11 @@ if universalYes(plotPial)
     cfg_out=plotPialSurf(sub,cfg);
     
     if universalYes(printEm)
-        outFigFname=sprintf('%s/%s_ShiftDist.jpg',erPath,sub);
+        outFigFname=sprintf('%s/PICS/electrodes/%s_ShiftDist.jpg',erPath,sub);
         print(figH(1),'-djpeg',outFigFname);
-        outFigFname=sprintf('%s/%s_ShiftDist',erPath,sub);
+        outFigFname=sprintf('%s/PICS/electrodes/%s_ShiftDist',erPath,sub);
         savefig(figH(1),outFigFname);
-        outFigFname=sprintf('%s/%s_ShiftDistOnBrain.jpg',erPath,sub);
+        outFigFname=sprintf('%s/PICS/electrodes/%s_ShiftDistOnBrain.jpg',erPath,sub);
         print(figH(2),'-djpeg',outFigFname);
     end
 end

@@ -187,7 +187,8 @@ for elecId=1:nElec,
             end
             %print(fLoop,[fsdir '/' fsub '/elec_recon/' figFname],'-djpeg');
             %figFname=sprintf('%s_%sSlices',fsSub,elecLabels{elecId});
-            figFname=sprintf('%s/%s/elec_recon/%s_%sSlices',fsdir,fsSub,fsSub,elecLabels{elecId});
+            figFname=sprintf('%s/%s/elec_recon/PICS/electrodes/%s_%sSlices',fsdir,fsSub,fsSub,elecLabels{elecId});
+            if ~exist(figFname,'dir'), mkdir(figFname); end
             fprintf('Exporting figure to %s\n',figFname);
             %print(figId,figFname,'-depsc');
             print(figId,figFname,'-djpeg');
