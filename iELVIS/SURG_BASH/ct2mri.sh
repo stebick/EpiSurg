@@ -54,7 +54,8 @@ cp $2 $elecReconPath/.
 
 echo 'Registering ' $2 ' to T1.nii.gz with a rigid (6 degrees of freedom) transformation that maximizes mutual information between the volumes. This takes awhile....'
 flirt -in $2  -ref $elecReconPath/T1.nii.gz -out $elecReconPath/ctINt1.nii.gz -omat $elecReconPath/ct2t1.mat -interp trilinear -cost mutualinfo -dof 6 -searchcost mutualinfo -searchrx -180 180 -searchry -180 180 -searchrz -180 180
-slices $elecReconPath/ctINt1.nii.gz $elecReconPath/T1.nii.gz
-slices $elecReconPath/T1.nii.gz  $elecReconPath/ctINt1.nii.gz  
+mkdir -p $elecReconPath/PICS/checks/
+slices $elecReconPath/ctINt1.nii.gz $elecReconPath/T1.nii.gz -o $elecReconPath/PICS/checks/ctINt1_1.gif 
+slices $elecReconPath/T1.nii.gz  $elecReconPath/ctINt1.nii.gz -o $elecReconPath/PICS/checks/ctINt1_2.gif 
 echo 'Run the command below to interactively inspect the coregistration:'
 echo "fslview ${elecReconPath}/T1.nii.gz ${elecReconPath}/ctINt1.nii.gz" 

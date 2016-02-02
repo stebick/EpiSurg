@@ -114,7 +114,9 @@ for elecId=1:nElec,
         %keep image square
         tempMin=min([limXa limYa]);
         tempMax=max([limXb limYb]);
-        axis([tempMin tempMax tempMin tempMax]);
+        if tempMin<tempMax, 
+            axis([tempMin tempMax tempMin tempMax]); 
+        end
         set(gca,'xtick',[],'ytick',[]);
         
         %subplot(132);
@@ -134,7 +136,9 @@ for elecId=1:nElec,
         %keep image square
         tempMin=min([limXa limYa]);
         tempMax=max([limXb limYb]);
-        axis([tempMin tempMax tempMin tempMax]);
+        if tempMin<tempMax,
+            axis([tempMin tempMax tempMin tempMax]);
+        end
         set(gca,'xtick',[],'ytick',[],'xdir','reverse');
         
         
@@ -155,10 +159,12 @@ for elecId=1:nElec,
         %keep image square
         tempMin=min([limXa limYa]);
         tempMax=max([limXb limYb]);
-        axis([tempMin tempMax tempMin tempMax]);
+        if tempMin<tempMax,
+            axis([tempMin tempMax tempMin tempMax]);
+        end
         set(gca,'xtick',[],'ytick',[]);
         
-        anatLabel=vox2Seg(xyz(elecId,:),fsSub);
+        anatLabel=vox2seg(xyz(elecId,:),fsSub);
   
         % Remove string "depth" from electrode label
         formattedLabel=rmSubstring(elecLabels{elecId},'depth',0);
@@ -181,7 +187,8 @@ for elecId=1:nElec,
             end
             %print(fLoop,[fsdir '/' fsub '/elec_recon/' figFname],'-djpeg');
             %figFname=sprintf('%s_%sSlices',fsSub,elecLabels{elecId});
-            figFname=sprintf('%s/%s/elec_recon/%s_%sSlices',fsdir,fsSub,fsSub,elecLabels{elecId});
+            figFname=sprintf('%s/%s/elec_recon/PICS/electrodes/%s_%sSlices',fsdir,fsSub,fsSub,elecLabels{elecId});
+            if ~exist(figFname,'dir'), mkdir(figFname); end
             fprintf('Exporting figure to %s\n',figFname);
             %print(figId,figFname,'-depsc');
             print(figId,figFname,'-djpeg');
