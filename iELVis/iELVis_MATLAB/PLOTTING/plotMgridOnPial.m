@@ -154,12 +154,23 @@ for hemLoop=1:2,
             
             set(gcf,'paperpositionmode','auto');
             if universalYes(printEm)
+                % Make sure PICS directory exists
+                erPath=fullfile(fsDir,fsub,'elec_recon');
+                outPath=fullfile(erPath,'PICS');
+                if ~exist(outPath,'dir')
+                    dirSuccess=mkdir(outPath);
+                    if ~dirSuccess,
+                        error('Could not create directory %s',dirSuccess);
+                    end
+                end
+                
                 if fLoop==1,
                     figFname=sprintf('%s%sMgridElec',fsub,hemLong);
                 else
                     figFname=sprintf('%s%sMgridElecDK',fsub,hemLong);
                 end
-                print(fLoop,[fsDir '/' fsub '/elec_recon/' figFname],'-djpeg');
+                outFname=fullfile(erPath,'PICS',figFname);
+                print(fLoop,outFname,'-djpeg');
             end
         end
     end

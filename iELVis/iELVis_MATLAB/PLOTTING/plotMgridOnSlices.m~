@@ -168,8 +168,8 @@ for elecId=1:nElec,
   
         % Remove first 3 characters that indicate hemisphere and electrode
         % type
-        formattedLabel=elecLabels{elecId}(4:end);
-        formattedLabel=rmChar(formattedLabel,'_'); % remove underscore between electrode stem and #
+        formattedLabel=rmSubstring(elecLabels{elecId},'depth',0);
+        formattedLabel=rmChar(formattedLabel,'_');
         
         if universalYes(fullTitle)
             ht=textsc2014([formattedLabel '; mgrid coords(' num2str(elecMatrix(elecId,:)-1) '); fsurf coords(' num2str(xyz(elecId,:)) '); ' anatLabel], ...
