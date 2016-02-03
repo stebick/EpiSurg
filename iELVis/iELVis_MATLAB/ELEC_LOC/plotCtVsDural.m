@@ -17,19 +17,21 @@ function [figH, axH]=plotCtVsDural(sub,printEm,plotPial)
 
 % Load dural and CT coordinates
 fsDir=getFsurfSubDir();
-erPath=[fsDir sub '/elec_recon/'];
-duralFname=[erPath sub '.DURAL'];
+%erPath=[fsDir sub '/elec_recon/'];
+erPath=fullfile(fsDir,sub,'elec_recon');
+duralFname=fullfile(erPath,[sub '.DURAL']);
+%duralFname=[erPath sub '.DURAL'];
 duralCsv=csv2Cell(duralFname,' ',2);
 nChan=size(duralCsv,1);
 
 % Load elec names etc..
-chanFname=[erPath sub '.electrodeNames'];
+chanFname=fullfile(erPath,[sub '.electrodeNames']);
 chanInfo=csv2Cell(chanFname,' ',2);
 chanName=chanInfo(:,1);
 chanType=chanInfo(:,2);
 chanHem=chanInfo(:,3);
 
-ctFname=[erPath sub '.CT'];
+ctFname=fullfile(erPath,[sub '.CT']);
 ctCsv=csv2Cell(ctFname,' ',2);
 
 duralRAS=zeros(nChan,3);
@@ -124,11 +126,22 @@ if universalYes(plotPial)
     cfg_out=plotPialSurf(sub,cfg);
     
     if universalYes(printEm)
-        outFigFname=sprintf('%s/PICS/electrodes/%s_ShiftDist.jpg',erPath,sub);
+        % Make sure PICS directory exists
+        outPath=fullfile(erPath,'PICS');
+        if ~exist(outPath,'dir')
+            dirSuccess=mkdir(outPath);
+            if ~dirSuccess,
+                error('Could not create directory %s',dirSuccess);
+            end
+        end
+        outFigFname=fullfile(outPath,sprintf('%s_ShiftDist.jpg',sub));
+        %outFigFname=sprintf('%s/PICS/electrodes/%s_ShiftDist.jpg',erPath,sub);
         print(figH(1),'-djpeg',outFigFname);
-        outFigFname=sprintf('%s/PICS/electrodes/%s_ShiftDist',erPath,sub);
+        outFigFname=fullfile(outPath,sprintf('%s_ShiftDist',sub));
+        %outFigFname=sprintf('%s/PICS/electrodes/%s_ShiftDist',erPath,sub);
         savefig(figH(1),outFigFname);
-        outFigFname=sprintf('%s/PICS/electrodes/%s_ShiftDistOnBrain.jpg',erPath,sub);
+        outFigFname=fullfile(outPath,sprintf('%s_ShiftDistOnBrain.jpg',sub));
+        %outFigFname=sprintf('%s/PICS/electrodes/%s_ShiftDistOnBrain.jpg',erPath,sub);
         print(figH(2),'-djpeg',outFigFname);
     end
 end

@@ -164,11 +164,12 @@ for elecId=1:nElec,
         end
         set(gca,'xtick',[],'ytick',[]);
         
-        anatLabel=vox2seg(xyz(elecId,:),fsSub);
+        anatLabel=vox2Seg(xyz(elecId,:),fsSub);
   
-        % Remove string "depth" from electrode label
-        formattedLabel=rmSubstring(elecLabels{elecId},'depth',0);
-        formattedLabel=rmChar(formattedLabel,'_');
+        % Remove first 3 characters that indicate hemisphere and electrode
+        % type
+        formattedLabel=elecLabels{elecId}(4:end);
+        formattedLabel=rmChar(formattedLabel,'_'); % remove underscore between electrode stem and #
         
         if universalYes(fullTitle)
             ht=textsc2014([formattedLabel '; mgrid coords(' num2str(elecMatrix(elecId,:)-1) '); fsurf coords(' num2str(xyz(elecId,:)) '); ' anatLabel], ...
@@ -185,10 +186,17 @@ for elecId=1:nElec,
             for a=1:3,
                 set(hm(a),'markersize',14);
             end
-            %print(fLoop,[fsdir '/' fsub '/elec_recon/' figFname],'-djpeg');
-            %figFname=sprintf('%s_%sSlices',fsSub,elecLabels{elecId});
-            figFname=sprintf('%s/%s/elec_recon/PICS/electrodes/%s_%sSlices',fsdir,fsSub,fsSub,elecLabels{elecId});
-            if ~exist(figFname,'dir'), mkdir(figFname); end
+            % Make sure PICS directory exists
+            erPath=fullfile(fsdir,fsSub,'elec_recon');
+            outPath=fullfile(erPath,'PICS');
+            if ~exist(outPath,'dir')
+                dirSuccess=mkdir(outPath);
+                if ~dirSuccess,
+                    error('Could not create directory %s',dirSuccess);
+                end
+            end
+            
+            figFname=fullfile(outPath,sprintf('%s_%sSlices',fsSub,elecLabels{elecId}));
             fprintf('Exporting figure to %s\n',figFname);
             %print(figId,figFname,'-depsc');
             print(figId,figFname,'-djpeg');

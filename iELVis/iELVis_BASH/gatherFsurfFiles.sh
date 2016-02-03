@@ -9,7 +9,7 @@
 
 usage='\nUSAGE:\n  gatherFsurfFiles.sh freesurferSubjectName \n\nEXAMPLE:\n gatherFsurfFiles.sh TWH014\n'
 
-if [[ "$#" = 0 ]]; then
+if [ "$#" = 0 ]; then
  echo $usage
  exit 2
 fi

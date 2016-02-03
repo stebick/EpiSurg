@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# ct2mri.sh
+# ct2mri12dfFast.sh
 # 
 #The second argument is the nii.gz file of the CT scan that you need to create with something like Matlab or FSL's mri_convert function.
 #This script uses FSL's flirt command with max flexibility (i.e., 12 degrees of freedom mapping) transform the CT scan so that it lines up with the preimplant MRI by maximizing the mutual information between the volumes.
@@ -14,9 +14,9 @@
 # Questions? Email: david.m.groppe@gmail.com
 # Copyright 2015 __MyCompanyName__. All rights reserved.
 
-usage='\nUSAGE:\n  ct2mri12df.sh freesurferSubjectName ctNiiFile\n\nEXAMPLE:\n ct2mri12df.sh TWH014 /Users/dgroppe/Desktop/TWH_14_DICOMS/ct.nii.gz\n'
+usage='\nUSAGE:\n  ct2mri12dfFast.sh freesurferSubjectName ctNiiFile\n\nEXAMPLE:\n ct2mri12df.sh TWH014 /Users/dgroppe/Desktop/TWH_14_DICOMS/ct.nii.gz\n'
 
-if [[ "$#" = 0 ]]; then
+if [ "$#" = 0 ]; then
  echo $usage
  exit 2
 fi
@@ -53,8 +53,17 @@ echo 'Copying CT nii.gz file to elec_recon folder.'
 cp $2 $elecReconPath/.
 
 echo 'Registering ' $2 ' to T1.nii.gz with a maximally flexible linear (12 degrees of freedom) transformation that maximizes mutual information between the volumes. This takes awhile....'
-flirt -in $2  -ref $elecReconPath/T1.nii.gz -out $elecReconPath/ctINt1.nii.gz -omat $elecReconPath/ct2t1.mat -interp trilinear -cost mutualinfo -dof 12 -searchcost mutualinfo -searchrx -180 180 -searchry -180 180 -searchrz -180 180
+flirt -in $2  -ref $elecReconPath/T1.nii.gz -out $elecReconPath/ctINt1.nii.gz -omat $elecReconPath/ct2t1.mat -interp trilinear -cost mutualinfo -dof 12
+# Make directory store coregistration images
+mkdir -p $elecReconPath/PICS/COREG/
+
+# Make images of CT/MRI coregistration
 slices $elecReconPath/ctINt1.nii.gz $elecReconPath/T1.nii.gz
-slices $elecReconPath/T1.nii.gz  $elecReconPath/ctINt1.nii.gz  
+slices $elecReconPath/T1.nii.gz  $elecReconPath/ctINt1.nii.gz
+
+# Make gifs of those images
+slices $elecReconPath/ctINt1.nii.gz $elecReconPath/T1.nii.gz -o $elecReconPath/PICS/COREG/ctINt1_1.gif
+slices $elecReconPath/T1.nii.gz  $elecReconPath/ctINt1.nii.gz -o $elecReconPath/PICS/COREG/ctINt1_2.gif
+
 echo 'Run the command below to interactively inspect the coregistration:'
 echo "fslview ${elecReconPath}/T1.nii.gz ${elecReconPath}/ctINt1.nii.gz" 
