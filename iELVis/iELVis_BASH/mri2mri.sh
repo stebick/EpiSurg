@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# ct2mri.sh
+# mri2mri.sh
 # 
 #The second argument is the nii.gz file of the CT scan that you need to create with something like Matlab or FSL's mri_convert function.
 #This script uses FSL's flirt command to rigidly (i.e., 6 degrees of freedom mapping) transform the CT scan so that it lines up with the preimplant MRI by maximizing the mutual information between the volumes.
@@ -14,9 +14,9 @@
 # Questions? Email: david.m.groppe@gmail.com
 # Copyright 2015 __MyCompanyName__. All rights reserved.
 
-usage='\nUSAGE:\n  ct2mri.sh freesurferSubjectName ctNiiFile\n\nEXAMPLE:\n ct2mri.sh TWH014 /Users/dgroppe/Desktop/TWH_14_DICOMS/ct.nii.gz\n'
+usage='\nUSAGE:\n  mri2mri.sh freesurferSubjectName postimpMriNiiFile\n\nEXAMPLE:\n mri2mri.sh TWH014 /Users/dgroppe/Desktop/TWH_14_DICOMS/postimpMri.nii.gz\n'
 
-if [[ "$#" = 0 ]]; then
+if [ "$#" = 0 ]; then
  echo $usage
  exit 2
 fi
@@ -49,13 +49,22 @@ mri_convert $mriPath/T1.mgz $elecReconPath/T1.nii.gz
 echo 'Creating brainmask.nii.gz in elec_recon folder for use with BioImageSuite later.'
 mri_convert $mriPath/brainmask.mgz $elecReconPath/brainmask.nii.gz
 
-echo 'Copying CT nii.gz file to elec_recon folder.'
+echo 'Copying postimplant MRI nii.gz file to elec_recon folder.'
 cp $2 $elecReconPath/.
 
-echo 'Registering ' $2 ' to T1.nii.gz with a rigid (6 degrees of freedom) transformation that maximizes mutual information between the volumes. This takes awhile....'
-flirt -in $2  -ref $elecReconPath/T1.nii.gz -out $elecReconPath/ctINt1.nii.gz -omat $elecReconPath/ct2t1.mat -interp trilinear -cost mutualinfo -dof 6 -searchcost mutualinfo -searchrx -180 180 -searchry -180 180 -searchrz -180 180
-mkdir -p $elecReconPath/PICS/checks/
-slices $elecReconPath/ctINt1.nii.gz $elecReconPath/T1.nii.gz -o $elecReconPath/PICS/checks/ctINt1_1.gif 
-slices $elecReconPath/T1.nii.gz  $elecReconPath/ctINt1.nii.gz -o $elecReconPath/PICS/checks/ctINt1_2.gif 
+echo 'Registering ' $2 ' to T1.nii.gz with a rigid (6 degrees of freedom) transformation that maximizes normalized correlation between the volumes. This takes awhile....'
+flirt -in $2  -ref $elecReconPath/T1.nii.gz -out $elecReconPath/postT1INpreT1.nii.gz -omat $elecReconPath/post2preT1.mat -interp trilinear -cost normcorr -dof 6 -searchcost normcorr -searchrx -180 180 -searchry -180 180 -searchrz -180 180
+# Make directory to store coregistration images
+mkdir -p $elecReconPath/PICS/COREG/
+
+# Make images of CT/MRI coregistration
+slices $elecReconPath/postT1INpreT1.nii.gz $elecReconPath/T1.nii.gz
+slices $elecReconPath/T1.nii.gz  $elecReconPath/postT1INpreT1.nii.gz
+
+# Make gifs of those images
+slices $elecReconPath/postT1INpreT1.nii.gz $elecReconPath/T1.nii.gz -o $elecReconPath/PICS/COREG/postINpreT1_1.gif
+slices $elecReconPath/T1.nii.gz  $elecReconPath/postT1INpreT1.nii.gz -o $elecReconPath/PICS/COREG/postINpreT1_2.gif
+
+echo flirt -in $2  -ref $elecReconPath/T1.nii.gz -out $elecReconPath/postT1INpreT1.nii.gz -omat $elecReconPath/post2preT1.mat -interp trilinear -cost normcorr -dof 6 -searchcost normcorr -searchrx -180 180 -searchry -180 180 -searchrz -180 180
 echo 'Run the command below to interactively inspect the coregistration:'
-echo "fslview ${elecReconPath}/T1.nii.gz ${elecReconPath}/ctINt1.nii.gz" 
+echo "fslview ${elecReconPath}/T1.nii.gz ${elecReconPath}/postT1INpreT1.nii.gz" 

@@ -164,7 +164,7 @@ for elecId=1:nElec,
         end
         set(gca,'xtick',[],'ytick',[]);
         
-        anatLabel=vox2seg(xyz(elecId,:),fsSub);
+        anatLabel=vox2Seg(xyz(elecId,:),fsSub);
   
         % Remove string "depth" from electrode label
         formattedLabel=rmSubstring(elecLabels{elecId},'depth',0);

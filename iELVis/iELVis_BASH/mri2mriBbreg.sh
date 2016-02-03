@@ -1,16 +1,16 @@
 #!/bin/sh
 
-usage='\nUSAGE:\n  ct2mriBbreg.sh freesurferSubjectName ctNiiFile\n\nEXAMPLE:\n ct2mriBbreg.sh TWH014 /Users/dgroppe/Desktop/TWH_14_DICOMS/ct.nii.gz\n'
+usage='\nUSAGE:\n  mri2mriBbreg.sh freesurferSubjectName ctNiiFile\n\nEXAMPLE:\n mri2mriBbreg.sh TWH014 /Users/dgroppe/Desktop/TWH_14_DICOMS/ct.nii.gz\n'
 
-if [[ "$#" = 0 ]]; then
+if [ "$#" = 0 ]; then
  echo -e $usage
  exit 2
 fi
 
 
-# ct2mri.sh
-# 
-# Registers a CT to an MRI using bbregister
+# mri2mri.sh
+#
+# Registers an MRI to an MRI using bbregister
 #
 # Created by David Groppe on 2/11/15.
 # Questions? Email: david.m.groppe@gmail.com
@@ -50,9 +50,18 @@ mri_convert $mriPath/brainmask.mgz $elecReconPath/brainmask.nii.gz
 echo 'Copying CT nii.gz file to elec_recon folder.'
 cp $2 $elecReconPath/.
 
-#bbregister --s $sub --mov $2 --reg $elecReconPath/ct2mri.dat --fslmat $elecReconPath/ct2mri.mat --init-fsl --bold
-#flirt -in $2 -ref $elecReconPath/T1.nii.gz -out $elecReconPath/ctINt1.nii.gz -interp trilinear -init $elecReconPath/ct2mri.mat -applyxfm
-#slices $elecReconPath/ctINt1.nii.gz $elecReconPath/T1.nii.gz
-#slices $elecReconPath/T1.nii.gz  $elecReconPath/ctINt1.nii.gz  
+bbregister --s $sub --mov $2 --reg $elecReconPath/mri2mri.dat --fslmat $elecReconPath/mri2mri.mat --init-fsl --t1
+flirt -in $2 -ref $elecReconPath/T1.nii.gz -out $elecReconPath/postT1INpreT1.nii.gz -interp trilinear -init $elecReconPath/mri2mri.mat -applyxfm
+# Make directory to store coregistration images
+mkdir -p $elecReconPath/PICS/COREG/
+
+# Make images of CT/MRI coregistration
+slices $elecReconPath/postT1INpreT1.nii.gz $elecReconPath/T1.nii.gz
+slices $elecReconPath/T1.nii.gz  $elecReconPath/postT1INpreT1.nii.gz
+
+# Make gifs of those images
+slices $elecReconPath/postT1INpreT1.nii.gz $elecReconPath/T1.nii.gz -o $elecReconPath/PICS/COREG/postINpreT1_1.gif
+slices $elecReconPath/T1.nii.gz  $elecReconPath/postT1INpreT1.nii.gz -o $elecReconPath/PICS/COREG/postINpreT1_2.gif
+
 echo 'Run this for interactive GUI'
-echo 'fslview ' $elecReconPath/T1.nii.gz ' ' $elecReconPath/ctINt1.nii.gz  
+echo 'fslview ' $elecReconPath '/T1.nii.gz' $elecReconPath '/postT1INpreT1.nii.gz'  

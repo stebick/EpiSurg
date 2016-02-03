@@ -423,14 +423,6 @@ end
 fclose(fidInf);
 
 
-%% Create text file of fsaverage coordinates
-% ??
-
-
-%% Create text file of fsaverage inflated coordinates
-% ??
-
-
 %% Plot results to double check
 plotCtVsDural(sub,1,1);
 
