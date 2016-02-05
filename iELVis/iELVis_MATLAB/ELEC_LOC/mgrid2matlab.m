@@ -55,7 +55,7 @@ if nargin<1
 else
     if isempty(findstr('.mgrid',mgridFname))
         %mgridFname must be a freesurfer subject codename
-        mgridFname=sprintf(sprintf('%s%s/elec_recon/%s.mgrid',fsDir,mgridFname,mgridFname));
+        mgridFname=fullfile(fsDir,mgridFname,'elec_recon',[mgridFname '.mgrid']);
     end
 end
 if ~exist(mgridFname,'file')
