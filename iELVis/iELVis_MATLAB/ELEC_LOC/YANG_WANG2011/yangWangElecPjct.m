@@ -47,8 +47,8 @@ function yangWangElecPjct(sub)
 % get the subject info
 fsDir=getFsurfSubDir();
 
-subPath = sprintf('%s%s',fsDir,sub);
-elecReconPath=[subPath '/elec_recon/'];
+subPath = fullfile(fsDir,sub);
+elecReconPath=fullfile(subPath,'elec_recon');
 
 if ~isdir(subPath)
     error('Freesurfer folder %s not found',subPath);

@@ -2,12 +2,12 @@
 
 # gatherFsurfFiles.sh
 # Collect the minimal FreeSurfer and BioimageSuite files for sharing. A minimal copy of the subject's
-# FreeSurfer folder is created IN THE CURRENT WORKING DIRECTORY and then zipped.
+# FreeSurfer folder is created on the desktop and then zipped.
 #
 # Created by David Groppe on 4/2/15.
 # Copyright 2015 __MyCompanyName__. All rights reserved.
 
-usage='\nUSAGE:\n  gatherFsurfFiles.sh freesurferSubjectName \n\nEXAMPLE:\n gatherFsurfFiles.sh TWH014\n'
+usage='\nUSAGE:\n  gatherFsurfFiles.sh freesurferSubjectName \n\nEXAMPLE:\n gatherFsurfFiles.sh PT001\n'
 
 if [ "$#" = 0 ]; then
  echo $usage
@@ -15,7 +15,7 @@ if [ "$#" = 0 ]; then
 fi
 
 sub=$1
-fsDir=$SUBJECTS_DIR$sub
+fsDir=$SUBJECTS_DIR/$sub
 if [ ! -d $fsDir ]; then
   echo
   echo "... ${fsDir} is not a directory."
@@ -27,16 +27,17 @@ fi
 # Create new fs folder on desktop
 #newFolder=$1;
 newFolder=~/Desktop/$1;
-echo "Making directory ${newFolder} in current working directory"
+echo "Making directory ${newFolder} on the Desktop"
 mkdir $newFolder
   
 # Copy elec_recon stuff
 mkdir $newFolder/elec_recon
 cp $fsDir/elec_recon/*.nii.gz $newFolder/elec_recon/.
 echo cp $fsDir/elec_recon/$1.mgrid $newFolder/elec_recon/.
-cp $fsDir/elec_recon/*.DURAL $newFolder/elec_recon/.
-cp $fsDir/elec_recon/*.PIAL $newFolder/elec_recon/.
-cp $fsDir/elec_recon/*.CT $newFolder/elec_recon/.
+cp $fsDir/elec_recon/*.DURAL* $newFolder/elec_recon/.
+cp $fsDir/elec_recon/*.PIAL* $newFolder/elec_recon/.
+cp $fsDir/elec_recon/*.INF* $newFolder/elec_recon/.
+cp $fsDir/elec_recon/*.CT* $newFolder/elec_recon/.
 cp $fsDir/elec_recon/*PostimpLoc*.txt $newFolder/elec_recon/.
 cp $fsDir/elec_recon/*.electrodeNames $newFolder/elec_recon/.
 cp $fsDir/elec_recon/*elec_recon.pdf $newFolder/elec_recon/.

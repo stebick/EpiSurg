@@ -14,8 +14,10 @@ function makeIniLocTxtFile(fsSub)
 
 fsDir=getFsurfSubDir();
 
-subPath = sprintf('%s/%s',fsDir,fsSub);
-elecReconPath=[subPath '/elec_recon/'];
+% subPath = sprintf('%s/%s',fsDir,fsSub);
+% elecReconPath=[subPath '/elec_recon/'];
+subPath = fullfile(fsDir,fsSub);
+elecReconPath=fullfile(subPath,'elec_recon');
 postimpLocFname=sprintf('%s%sPostimpLoc.txt',elecReconPath,fsSub);
 
 
