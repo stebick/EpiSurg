@@ -18,8 +18,7 @@ fsDir=getFsurfSubDir();
 % elecReconPath=[subPath '/elec_recon/'];
 subPath = fullfile(fsDir,fsSub);
 elecReconPath=fullfile(subPath,'elec_recon');
-postimpLocFname=sprintf('%s%sPostimpLoc.txt',elecReconPath,fsSub);
-
+postimpLocFname=fullfile(elecReconPath,[fsSub 'PostimpLoc.txt']);
 
 %% space delimited from mgrid
 [eCoords, elecLabels, elecRgb, elecPairs, elecPresent]=mgrid2matlab(fsSub);
