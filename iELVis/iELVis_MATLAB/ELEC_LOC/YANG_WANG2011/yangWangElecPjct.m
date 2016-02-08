@@ -57,7 +57,7 @@ end
 
 %% read the inital text file with postimplant electrode coordinates
 % Note coordinates are in voxels (NOT RAS)
-postimpLocFname=sprintf('%s%sPostimpLoc.txt',elecReconPath,sub);
+postimpLocFname=fullfile(elecReconPath,[sub 'PostimpLoc.txt']);
 if ~exist(postimpLocFname,'file')
     error('File %s does NOT exist.',postimpLocFname);
 end
