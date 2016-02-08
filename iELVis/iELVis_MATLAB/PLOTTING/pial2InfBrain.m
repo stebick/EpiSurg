@@ -51,8 +51,8 @@ sub_dir=[fs_dir '/' fsSub];
 %% get electrode coordinates
 if isempty(elecCoord) % no electrode coordinates have been passed in the function call:
     % use the original code looking for .PIAL files
-    pialFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.PIAL'];
-    %pialFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.DURAL'];
+    %pialFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.PIAL'];
+    pialFname=fullfile(fs_dir,fsSub,'elec_recon',[fsSub '.PIAL']);
     elecCoordCsv=csv2Cell(pialFname,' ',2);
     nChan=size(elecCoordCsv,1);
     RAS_coor=zeros(nChan,3);
@@ -61,7 +61,8 @@ if isempty(elecCoord) % no electrode coordinates have been passed in the functio
             RAS_coor(csvLoopA,csvLoopB)=str2num(elecCoordCsv{csvLoopA,csvLoopB});
         end
     end
-    elecInfoFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.electrodeNames'];
+    %elecInfoFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.electrodeNames'];
+    elecInfoFname=fullfile(fs_dir,fsSub,'elec_recon',[fsSub '.electrodeNames']);
     elecInfo=csv2Cell(elecInfoFname,' ',2);
     %labels=elecInfo(:,1);
     leftIds=find(cellfun(@(x) strcmpi(x,'L'),elecInfo(:,3)));
@@ -93,11 +94,13 @@ for hemLoop=1:2,
     end
     
     %% Read Sub Pial Surf
-    fname=[sub_dir '/surf/' hem 'h.pial'];
+    %fname=[sub_dir '/surf/' hem 'h.pial'];
+    fname=fullfile(sub_dir,'surf',[hem 'h.pial']);
     pial=readSurfHelper(fname);
     
     %% Read Sub Inflated Surf
-    fname=[sub_dir '/surf/' hem 'h.inflated'];
+    %fname=[sub_dir '/surf/' hem 'h.inflated'];
+    fname=fullfile(sub_dir,'surf',[hem 'h.inflated']);
     inflated=readSurfHelper(fname);
     
     %% Get vertices for electrodes on sub's pial surface
