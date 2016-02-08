@@ -314,7 +314,6 @@ if ~isfield(cfg, 'snap2surf'),      snap2surf = 0;         else  snap2surf = cfg
 if ~isfield(cfg, 'surfType'),       surfType = 'pial';     else  surfType = cfg.surfType;     end
 if ~isfield(cfg, 'elecCoord'),      elecCoord= 'yes';      else  elecCoord = cfg.elecCoord;       end
 if ~isfield(cfg, 'elecColors'),     elecColors= [];        else  elecColors = cfg.elecColors;        end
-if ~isfield(cfg, 'elecColorScale'), elecColorScale='absmax';   else elecColorScale=cfg.elecColorScale; end
 if ~isfield(cfg, 'elecCbar'),       elecCbar=[];          else elecCbar=cfg.elecCbar; end
 if ~isfield(cfg, 'niCbar'),         niCbar=[];          else niCbar=cfg.niCbar; end
 if ~isfield(cfg, 'niFname'),        niFname=[];          else niFname=cfg.niFname; end
