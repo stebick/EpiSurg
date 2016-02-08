@@ -318,7 +318,6 @@ if ~isfield(cfg, 'elecCbar'),       elecCbar=[];          else elecCbar=cfg.elec
 if ~isfield(cfg, 'niCbar'),         niCbar=[];          else niCbar=cfg.niCbar; end
 if ~isfield(cfg, 'niFname'),        niFname=[];          else niFname=cfg.niFname; end
 if ~isfield(cfg, 'units'),          units=[];            else units=cfg.units; end
-if ~isfield(cfg, 'elecColorScale'),     elecColorScale='absmax';   else elecColorScale=cfg.elecColorScale; end
 if ~isfield(cfg, 'pullOut'),        pullOut= 1;            else  pullOut = cfg.pullOut; end
 if ~isfield(cfg, 'view'),           brainView= 'l';       else  brainView = cfg.view; end
 if ~isfield(cfg, 'axis'),           hAx=[];               else  hAx=cfg.axis; end
@@ -733,12 +732,12 @@ else
     if isempty(elecColors)
         elecColors = zeros(size(RAS_coor));
     elseif isvector(elecColors)
-        if isnumeric(cfg.elecColorScale)
+        if isnumeric(elecColorScale)
             type='minmax';
-            cbarMin=cfg.elecColorScale(1);
-            cbarMax=cfg.elecColorScale(2);
+            cbarMin=elecColorScale(1);
+            cbarMax=elecColorScale(2);
         else
-            type=cfg.elecColorScale;
+            type=elecColorScale;
         end
         if verLessThan('matlab','8.0.1')
             cmapName='jet';
