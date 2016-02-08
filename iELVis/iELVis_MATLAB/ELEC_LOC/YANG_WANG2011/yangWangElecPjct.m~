@@ -431,7 +431,7 @@ plotCtVsDural(sub,1,1);
 if 0
     % DG disabled this as I don't know how useful it is
     %fname_bin = [PathName,Sname,'_elec_bin_T1_' datestr(now,29), '.nii.gz'];
-    fname_bin = fullfile(elecReconPath,[sub '_elec_bin_T1_' datestr(now,29), '.nii.gz']);
+    fname_bin = [elecReconPath sub '_elec_bin_T1_' datestr(now,29), '.nii.gz'];
     fprintf('Saving electrode locations as binary nii file: %s\n',fname_bin);
     elec_vox = ntools_elec_savebin([x y z],hdr,fname_bin);
 end
@@ -440,7 +440,7 @@ end
 if 0
     elec_mni = ntools_elec_dartel_warp(fname_bin,[dep_img_path,dep_img_file]);
     %fname_mni = [PathName Sname '_coor_MNI_' datestr(now,29) '.txt'];
-    fname_mni = fullfile(elecReconPath,[sub '_coor_MNI_' datestr(now,29) '.txt']);
+    fname_mni = [elecReconPath sub '_coor_MNI_' datestr(now,29) '.txt'];
     ntools_elec_savetxt(fname_mni,[name num2cell(elec_mni) label]);
 end
 
