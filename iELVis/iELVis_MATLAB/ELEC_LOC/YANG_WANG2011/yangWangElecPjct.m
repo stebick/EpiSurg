@@ -267,7 +267,7 @@ for hemLoop=1:2,
                 pialRAS(ct,b)=elec_strip{a,b+2};
             end
         end
-        pialRAS = snap2surf(pialRAS,fullfile(subPath,'surf',[hem(1) 'h.pial']));
+        pialRAS = snap2surf(pialRAS,fullfile(subPath,'surf'),hem(1),'pial');
         
         % add depth coords, which are not snapped to surface
         for a=1:nDepthThisHem,

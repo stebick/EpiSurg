@@ -1,5 +1,5 @@
 %---------------------------------------------------
-% FUNCTION: Y = get_loc_snap_mgh(electrodes,surface_path,side,surftype)
+% FUNCTION: Y = snap2surf(electrodes,surface_path,side,surftype)
 % INPUTS:   
 %           electrodes = Nx3 matrix of original RAS coordinates of electrodes
 %           
