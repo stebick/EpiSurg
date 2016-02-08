@@ -193,7 +193,7 @@ end
 %% Save the electrodes locations and labels as text files
 
 %%%%%% Output Electrode Names to Text Files %%%%%%%%%
-fnameLabels = [elecReconPath sub '.electrodeNames'];
+fnameLabels=fullfname(elecReconPath,[sub '.electrodeNames']);
 fprintf('Saving electrode labels to: %s\n',fnameLabels);
 fidLabels=fopen(fnameLabels,'w');
 fprintf(fidLabels,'%s\n',datestr(now));
