@@ -375,7 +375,7 @@ for hemLoop=1:2,
         % VOX COORDINATES
         RAS2VOX=inv(VOX2RAS);
         duralVOX=(RAS2VOX*[duralRAS'; ones(1, nElecThisHem)])';
-        fnameDuralVOX = [elecReconPath sub '.DURALVOX'];
+        fnameDuralVOX = fullfile(elecReconPath,[sub '.DURALVOX']);
         fprintf('Saving dural VOX electrode locations to: %s\n',fnameDuralVOX);
         if isempty(fidDuralVox)
             fidDuralVox=fopen(fnameDuralVOX,'w');
