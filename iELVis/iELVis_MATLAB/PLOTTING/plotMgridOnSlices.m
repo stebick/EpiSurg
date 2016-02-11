@@ -41,11 +41,13 @@ function plotMgridOnSlices(fsSub,cfg)
 % Add option for fsurf anatomy colors?
 
 if ~isfield(cfg,'mgridFname'),    mgridFname=[];    else mgridFname=cfg.mgridFname; end
-if ~isfield(cfg,'fullTitle'),    fullTitle=0;       else fullTitle=cfg.fullTitle; end
+if ~isfield(cfg,'fullTitle'),     fullTitle=0;      else fullTitle=cfg.fullTitle; end
+if ~isfield(cfg,'markersize'),    markersize=30;    else markersize=cfg.markersize; end
 if ~isfield(cfg,'cntrst'),    cntrst=.5;          else cntrst=cfg.cntrst; end
 if ~isfield(cfg,'pauseOn'),    pauseOn=0;          else pauseOn=cfg.pauseOn; end
 if ~isfield(cfg,'printFigs'),    printFigs=0;          else printFigs=cfg.printFigs; end
 checkCfg(cfg,'plotMgridOnSlices.m');
+
 
 % FreeSurfer Subject Directory
 fsdir=getFsurfSubDir();
@@ -103,7 +105,7 @@ for elecId=1:nElec,
         set(gca,'xdir','reverse');
         hold on;
         hm(1)=plot(xyz(elecId,3),xyz(elecId,1),'r.');
-        set(hm(1),'color',elecRgb(elecId,:));
+        set(hm(1),'color',elecRgb(elecId,:),'markersize',markersize);
         %find image limits
         mxX=max(squeeze(mri.vol(:,xyz(elecId,2),:)),[],2);
         mxY=max(squeeze(mri.vol(:,xyz(elecId,2),:)),[],1);
@@ -125,7 +127,7 @@ for elecId=1:nElec,
         axis square;
         hold on;
         hm(2)=plot(xyz(elecId,3),xyz(elecId,2),'r.');
-        set(hm(2),'color',elecRgb(elecId,:));
+        set(hm(2),'color',elecRgb(elecId,:),'markersize',markersize);
         %find image limits
         mxX=max(squeeze(mri.vol(xyz(elecId,1),:,:)),[],2);
         mxY=max(squeeze(mri.vol(xyz(elecId,1),:,:)),[],1);
@@ -140,7 +142,7 @@ for elecId=1:nElec,
             axis([tempMin tempMax tempMin tempMax]);
         end
         set(gca,'xtick',[],'ytick',[],'xdir','reverse');
-        
+        set(hm(2),'color',elecRgb(elecId,:),'markersize',markersize);
         
         %subplot(133);
         axes('position',[xStart+wDelt*2 yStart wdth ht]);
@@ -148,7 +150,7 @@ for elecId=1:nElec,
         axis square;
         hold on;
         hm(3)=plot(xyz(elecId,2),xyz(elecId,1),'r.');
-        set(hm(3),'color',elecRgb(elecId,:));
+        set(hm(3),'color',elecRgb(elecId,:),'markersize',markersize);
         %find image limits
         mxX=max(squeeze(mri.vol(:,:,xyz(elecId,3))),[],2);
         mxY=max(squeeze(mri.vol(:,:,xyz(elecId,3))),[],1);
@@ -196,6 +198,7 @@ for elecId=1:nElec,
                 end
             end
             
+            drawnow;
             figFname=fullfile(outPath,sprintf('%s_%sSlices',fsSub,elecLabels{elecId}));
             fprintf('Exporting figure to %s\n',figFname);
             %print(figId,figFname,'-depsc');
