@@ -170,7 +170,7 @@ for hemLoop=1:2,
                     figFname=sprintf('%s%sMgridElecDK',fsub,hemLong);
                 end
                 outFname=fullfile(erPath,'PICS',figFname);
-                print(fLoop,outFname,'-djpeg');
+                print(cfg.figId,outFname,'-djpeg');
             end
         end
     end
