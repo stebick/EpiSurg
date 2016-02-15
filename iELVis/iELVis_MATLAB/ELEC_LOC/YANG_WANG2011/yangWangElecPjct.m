@@ -198,6 +198,7 @@ for hemLoop=1:2,
             
             for a=1:nGridType,
                 % For each grid identify the dimensions
+                disp('If grids have unequal dimensions, rows is probably the smaller dimension.');
                 nRow=input(sprintf('How many rows does %s have? (default-> 8): ',gridNames{a}));
                 if isempty(nRow),
                     nRow=8;

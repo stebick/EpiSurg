@@ -1,5 +1,5 @@
 function [map, limits, cmap]=vals2Colormap(vals,type,cmap,minmax)
-%function [map, limits]=vals2Colormap(vals,type,cmap,minmax)
+%function [map, limits, cmap]=vals2Colormap(vals,type,cmap,minmax)
 % creates colormap (i.e., colorscale)
 %
 % Required Inputs:
@@ -121,7 +121,7 @@ elseif strcmpi(type,'minmax')
     nVals=length(vals);
     vals_col=zeros(nVals,1);
     for myidx = 1:nVals,
-        vals_col(myidx) = nearest(cval,vals(myidx))';
+        vals_col(myidx) = nearestValId(cval,vals(myidx))';
     end
     map=rgb_vals(vals_col,:);
     
