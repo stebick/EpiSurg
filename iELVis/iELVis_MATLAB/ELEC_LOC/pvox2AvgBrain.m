@@ -1,5 +1,5 @@
-function [avgCoords, avgVids, subVids, elecNames]=pvox2AvgBrain(subj,cfg)
-%function [avgCoords, avgVids, subVids, elecNames]=pvox2AvgBrain(subj,cfg)
+function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg)
+%function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg)
 %
 % This function takes RAS "pial" coordinates (snapped to pial surface)
 % and maps it to the corresponding location on the pial surface of
@@ -225,7 +225,7 @@ for hemLoop=1:2,
             
             % MEDIAL VIEW
             hFig=figure;
-            set(hFig,'position',[360 335 829 360]);
+            set(hFig,'position',[360 325 829 360]);
             
             % Plot Electrodes on Avg Brain
             subplot(1,2,1);

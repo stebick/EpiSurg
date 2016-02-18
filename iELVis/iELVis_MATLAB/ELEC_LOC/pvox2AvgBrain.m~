@@ -1,5 +1,7 @@
 function [avgCoords, avgVids, subVids, elecNames]=pvox2AvgBrain(subj,cfg)
-%function [avgCoords, avgVids, subVids, elecNames]=pvox2AvgBrain(subj,cfg)
+% [avgCoords, elecNames, elecHem]=pvox2AvgBrain(subs{a},[]);
+%
+%function [avgCoords, elecNames, avgVids, subVids, elecNames]=pvox2AvgBrain(subj,cfg)
 %
 % This function takes RAS "pial" coordinates (snapped to pial surface)
 % and maps it to the corresponding location on the pial surface of
@@ -177,97 +179,98 @@ for hemLoop=1:2,
             avgCoords(hemElecIds(a),:)=avgPial.vert(avgVids(hemElecIds(a)),:);
         end
         
-    end
-    
-    
-    % Plot results (optional)
-    if universalYes(plotEm)
-        % LATERAL VIEW
-        hFig=figure;
-        set(hFig,'position',[360 335 829 360]);
         
-        % Plot Electrodes on Avg Brain
-        subplot(1,2,1);
-        map=[1 1 1]*.7;
-        tripatchDG(avgPial,hFig,map);
-        shading interp; lighting gouraud; material dull; axis off, hold on
-        if strcmp(hem,'r')
-            l=light('Position',[1 0 0]);
-            view(90,0);
-        else
-            l=light('Position',[-1 0 0]);
-            view(270,0);
+        % Plot results (optional)
+        if universalYes(plotEm)
+            % LATERAL VIEW
+            hFig=figure;
+            set(hFig,'position',[360 335 829 360]);
+            
+            % Plot Electrodes on Avg Brain
+            subplot(1,2,1);
+            map=[1 1 1]*.7;
+            tripatchDG(avgPial,hFig,map);
+            shading interp; lighting gouraud; material dull; axis off, hold on
+            if strcmp(hem,'r')
+                l=light('Position',[1 0 0]);
+                view(90,0);
+            else
+                l=light('Position',[-1 0 0]);
+                view(270,0);
+            end
+            for a=1:nElec,
+                h=plot3(avgCoords(a,1),avgCoords(a,2),avgCoords(a,3),'r.');
+                clickText(h,elecNames{a});
+                set(h,'markersize',20);
+            end
+            rotate3d off;
+            
+            % Plot Electrodes on Participant Brain
+            subplot(1,2,2);
+            tripatchDG(pial,hFig,map);
+            shading interp; lighting gouraud; material dull; axis off, hold on
+            if strcmp(hem,'r')
+                l=light('Position',[1 0 0]);
+                view(90,0);
+            else
+                l=light('Position',[-1 0 0]);
+                view(270,0);
+            end
+            for a=1:nElec
+                d=subVids(a);
+                h=plot3(pial.vert(d,1),pial.vert(d,2),pial.vert(d,3),'r.');
+                clickText(h,elecNames{a});
+                set(h,'markersize',20);
+            end
+            rotate3d off;
+            set(gcf,'name',subj);
+            
+            % MEDIAL VIEW
+            hFig=figure;
+            set(hFig,'position',[360 325 829 360]);
+            
+            % Plot Electrodes on Avg Brain
+            subplot(1,2,1);
+            map=[1 1 1]*.7;
+            tripatchDG(avgPial,hFig,map);
+            shading interp; lighting gouraud; material dull; axis off, hold on
+            if strcmp(hem,'r')
+                l=light('Position',[-1 0 0]);
+                view(270,0)
+            else
+                l=light('Position',[1 0 0]);
+                view(90,0);
+            end
+            for a=1:nElec
+                h=plot3(avgCoords(a,1),avgCoords(a,2),avgCoords(a,3),'r.');
+                %                 clickText(h,[elecNames{a} sprintf(' %.3f %.3f %.3f',avgCoords(a,1), ...
+                %                     avgCoords(a,2),avgCoords(a,3))]);
+                clickText(h,elecNames{a});
+                set(h,'markersize',20);
+            end
+            rotate3d off;
+            
+            % Plot Electrodes on Participant Brain
+            subplot(1,2,2);
+            tripatchDG(pial,hFig,map);
+            shading interp; lighting gouraud; material dull; axis off, hold on
+            if strcmp(hem,'r')
+                l=light('Position',[-1 0 0]);
+                view(270,0)
+            else
+                l=light('Position',[1 0 0]);
+                view(90,0);
+            end
+            for a=1:nElec
+                d=subVids(a);
+                h=plot3(pial.vert(d,1),pial.vert(d,2),pial.vert(d,3),'r.');
+                clickText(h,elecNames{a});
+                set(h,'markersize',20);
+            end
+            rotate3d off;
+            set(gcf,'name',subj);
+            
+            drawnow;
         end
-        for a=1:nElec,
-            h=plot3(avgCoords(a,1),avgCoords(a,2),avgCoords(a,3),'r.');
-            clickText(h,elecNames{a});
-            set(h,'markersize',20);
-        end
-        rotate3d off;
-        
-        % Plot Electrodes on Participant Brain
-        subplot(1,2,2);
-        tripatchDG(pial,hFig,map);
-        shading interp; lighting gouraud; material dull; axis off, hold on
-        if strcmp(hem,'r')
-            l=light('Position',[1 0 0]);
-            view(90,0);
-        else
-            l=light('Position',[-1 0 0]);
-            view(270,0);
-        end
-        for a=1:nElec
-            d=subVids(a);
-            h=plot3(pial.vert(d,1),pial.vert(d,2),pial.vert(d,3),'r.');
-            clickText(h,elecNames{a});
-            set(h,'markersize',20);
-        end
-        rotate3d off;
-        set(gcf,'name',subj);
-        
-        % MEDIAL VIEW
-        hFig=figure;
-        set(hFig,'position',[360 335 829 360]);
-        
-        % Plot Electrodes on Avg Brain
-        subplot(1,2,1);
-        map=[1 1 1]*.7;
-        tripatchDG(avgPial,hFig,map);
-        shading interp; lighting gouraud; material dull; axis off, hold on
-        if strcmp(hem,'r')
-            l=light('Position',[-1 0 0]);
-            view(270,0)
-        else
-            l=light('Position',[1 0 0]);
-            view(90,0);
-        end
-        for a=1:nElec
-            h=plot3(avgCoords(a,1),avgCoords(a,2),avgCoords(a,3),'r.');
-            clickText(h,[elecNames{a} sprintf(' %.3f %.3f %.3f',avgCoords(a,1), ...
-                avgCoords(a,2),avgCoords(a,3))]);
-            set(h,'markersize',20);
-        end
-        rotate3d off;
-        
-        subplot(1,2,2);
-        tripatchDG(pial,hFig,map);
-        shading interp; lighting gouraud; material dull; axis off, hold on
-        if strcmp(hem,'r')
-            l=light('Position',[-1 0 0]);
-            view(270,0)
-        else
-            l=light('Position',[1 0 0]);
-            view(90,0);
-        end
-        for a=1:nElec
-            d=subVids(a);
-            h=plot3(pial.vert(d,1),pial.vert(d,2),pial.vert(d,3),'r.');
-            clickText(h,elecNames{a});
-            set(h,'markersize',20);
-        end
-        rotate3d off;
-        set(gcf,'name',subj);
-        
-        drawnow;
     end
 end

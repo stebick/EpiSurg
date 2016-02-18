@@ -17,7 +17,7 @@
 %                           taken from *.DURAL file in patient's
 %                           FreeSurfer folder.  Alternatively, you
 %                           can pass a 2D matrix of coordinates
-%                           instead. {default: 'y'}
+%                           instead. {default: 'y'} ??
 %     elecSize             -Size of electrode markers (disks or spheres).
 %                           This also determines thickness of lines connecting
 %                           electrodes (if any) and electrode labels (if
@@ -628,9 +628,9 @@ else
         verbReport(sprintf('...Overlaying electrodes. Taking coordinates from %s.DURAL and %s.electrodeNames in elec_recon folder. Use cfg.eleccord=''n''; if not wanted.',fsSub,fsSub), ...
             2,verbLevel);
         if strcmpi(surfType,'inflated')
-            coordFname=[fsDir '/' fsSub '/elec_recon/' fsSub '.INF'];
+            coordFname=fullfile(fsDir,fsSub,'elec_recon',[fsSub '.INF']);
         else
-            coordFname=[fsDir '/' fsSub '/elec_recon/' fsSub '.DURAL'];
+            coordFname=fullfile(fsDir,fsSub,'elec_recon',[fsSub '.DURAL']);
         end
         elecCoordCsv=csv2Cell(coordFname,' ',2);
         nElecTotal=size(elecCoordCsv,1);
@@ -641,7 +641,7 @@ else
             end
         end
 
-        elecInfoFname=[fsDir '/' fsSub '/elec_recon/' fsSub '.electrodeNames'];
+        elecInfoFname=fullfile(fsDir,fsSub,'elec_recon',[fsSub '.electrodeNames']);
         elecInfo=csv2Cell(elecInfoFname,' ',2);
 
         % Remove elecs in opposite hemisphere
@@ -1018,7 +1018,7 @@ end
 set(hFig,'MenuBar','none','position',[100 190 1000 600],'paperpositionmode','auto');
 
 %% Figure out which hemisphere has electrodes
-elecInfoFname=[fsDir '/' fsSub '/elec_recon/' fsSub '.electrodeNames'];
+elecInfoFname=fullfile(fsDir,fsSub,'elec_recon',[fsSub '.electrodeNames']);
 elecInfo=csv2Cell(elecInfoFname,' ',2);
 leftCoverage=~isempty(findStrInCell('L',elecInfo(:,3)));
 rightCoverage=~isempty(findStrInCell('R',elecInfo(:,3)));
