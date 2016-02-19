@@ -451,9 +451,9 @@ end
 global cort %speeds up omni a tiny bit ??
 if isempty(cort)
     if side == 'r'
-        [cort.vert cort.tri]=read_surf([surfacefolder 'rh.' surfType]);
+        [cort.vert cort.tri]=read_surf(fullfile(surfacefolder,['rh.' surfType]));
     else
-        [cort.vert cort.tri]=read_surf([surfacefolder 'lh.' surfType]);
+        [cort.vert cort.tri]=read_surf(fullfile(surfacefolder,['lh.' surfType]));
     end
     if min(min(cort.tri))<1
         cort.tri=cort.tri+1; %sometimes this is needed sometimes not. no comprendo. DG
@@ -606,7 +606,7 @@ alpha(opaqueness);
 
 
 %% PLOT ELECTRODES (optional)
-elecSphere=0; %default
+%elecSphere=0; %default
 if universalNo(elecCoord)
     verbReport('...not plotting electrodes',2,verbLevel);
 else
@@ -620,7 +620,8 @@ else
             else
                 showElecIds=find(~elecCoord(:,4));
             end
-            elecNames=cfg.elecNames(showElecIds); 
+            % elecNames=cfg.elecNames(showElecIds);
+            color_elecnames=cfg.elecNames(showElecIds); 
             RAS_coor=RAS_coor(showElecIds,:);
             if strcmpi(surfType,'inflated')
                 cfg_pvox2inf=[];
@@ -792,6 +793,8 @@ else
     else
         elecSphere=0;
     end
+    
+    
     for j = 1:nRAS
         if ismember(lower(elecNames{j}),lower(onlyShow)),
             if ~isempty(color_elecnames)
@@ -802,11 +805,7 @@ else
                     if elecSphere
                         sph_ct=sph_ct+1;
                         h_elec(sph_ct)=surf(sphX+RAS_coor(j,1),sphY+RAS_coor(j,2),sphZ+RAS_coor(j,3),zeros(Zdim));
-                        %h_sph(sph_ct)=surf(sphX+RAS_coor(j,1),sphY+RAS_coor(j,2),sphZ+RAS_coor(j,3),zeros(Zdim));
                         sph_colors(sph_ct,:)=[1 1 1]*.01;
-                        %colormap(gca,[1 1 1]*.01);
-                        %shading interp; lighting gouraud; material dull;
-                        %set(h_sph(sph_ct),'facecolor',[1 1 1]*.01);
                     else
                         h_elec=plot3(RAS_coor(j,1),RAS_coor(j,2),RAS_coor(j,3),'o','Color','k','MarkerFaceColor','k','MarkerSize',elecSize);
                     end
@@ -1028,7 +1027,8 @@ set(hFig,'MenuBar','none','position',[100 190 1000 600],'paperpositionmode','aut
 
 %% Figure out which hemisphere has electrodes
 if isnumeric(elecCoord),
-    leftCoverage=sum(elecCoord(:,4));
+    leftCoverage=sum(elecCoord(:,4))>0;
+    rightCoverage=sum(~elecCoord(:,4))>0;
 else
     % Grab electrode info from subject dir
     elecInfoFname=fullfile(fsDir,fsSub,'elec_recon',[fsSub '.electrodeNames']);
@@ -1099,7 +1099,8 @@ for h=1:2,
             if ~leftCoverage || (ischar(elecCoord) && universalNo(elecCoord)), 
                 sub_cfg.elecCoord='n';
             else
-                sub_cfg.elecCoord='y';
+                %sub_cfg.elecCoord='y'; ??
+                sub_cfg.elecCoord=elecCoord;
                 if ~isfield('elecSize',sub_cfg)
                     sub_cfg.elecSize=6;
                 end
@@ -1107,7 +1108,8 @@ for h=1:2,
             end
         else
             if ~rightCoverage || (ischar(elecCoord) && universalNo(elecCoord)),
-                sub_cfg.elecCoord='n';
+                %% sub_cfg.elecCoord='n';
+                sub_cfg.elecCoord=elecCoord;
             else
                 sub_cfg.elecCoord='y';
                 if ~isfield('elecSize',sub_cfg)

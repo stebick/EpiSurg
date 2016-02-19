@@ -606,7 +606,7 @@ alpha(opaqueness);
 
 
 %% PLOT ELECTRODES (optional)
-elecSphere=0; %default
+%elecSphere=0; %default
 if universalNo(elecCoord)
     verbReport('...not plotting electrodes',2,verbLevel);
 else
@@ -620,14 +620,17 @@ else
             else
                 showElecIds=find(~elecCoord(:,4));
             end
-            elecNames=cfg.elecNames(showElecIds); 
-            RAS_coor=RAS_coor(showElecIds,:);
+            % elecNames=cfg.elecNames(showElecIds);
+            color_elecnames=cfg.elecNames(showElecIds);
+            elecNames=color_elecnames; % ?? if these variables are redundant, we should just remove them
             if strcmpi(surfType,'inflated')
                 cfg_pvox2inf=[];
                 cfg_pvox2inf.fsurfSubDir=fsDir;
-                cfg_pvox2inf.elecCoord=elecCoord;
-                cfg_pvox2inf.elecNames=elecNames;
+                cfg_pvox2inf.elecCoord=elecCoord(showElecIds,:);
+                cfg_pvox2inf.elecNames=color_elecnames;
                 RAS_coor=pial2InfBrain(fsSub,cfg_pvox2inf); % ?? make sure this code works
+            else
+                RAS_coor=RAS_coor(showElecIds,:);
             end
         else
             error('...Electrode input is numeric but doesn''t have 3 coordinates + binary hemisphere column');
@@ -792,6 +795,8 @@ else
     else
         elecSphere=0;
     end
+    
+    
     for j = 1:nRAS
         if ismember(lower(elecNames{j}),lower(onlyShow)),
             if ~isempty(color_elecnames)
@@ -1040,6 +1045,7 @@ if isnumeric(elecColorScale)
 else
     used_limits=[];
 end
+% Loop over hemispheres
 for h=1:2,
     for v=1:6, %will run 1-6
         ax_loc=[0 0 0 0];
@@ -1096,7 +1102,6 @@ for h=1:2,
             if ~leftCoverage || (ischar(elecCoord) && universalNo(elecCoord)), 
                 sub_cfg.elecCoord='n';
             else
-                %sub_cfg.elecCoord='y'; ??
                 sub_cfg.elecCoord=elecCoord;
                 if ~isfield('elecSize',sub_cfg)
                     sub_cfg.elecSize=6;
@@ -1105,10 +1110,9 @@ for h=1:2,
             end
         else
             if ~rightCoverage || (ischar(elecCoord) && universalNo(elecCoord)),
-                %% sub_cfg.elecCoord='n';
-                sub_cfg.elecCoord=elecCoord;
+                sub_cfg.elecCoord='n';
             else
-                sub_cfg.elecCoord='y';
+                sub_cfg.elecCoord=elecCoord;
                 if ~isfield('elecSize',sub_cfg)
                     sub_cfg.elecSize=6;
                 end

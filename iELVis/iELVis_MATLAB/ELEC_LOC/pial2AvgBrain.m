@@ -1,5 +1,5 @@
-function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg)
-%function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg)
+function [avgCoords, elecNames, isLeft, avgVids, subVids]=pial2AvgBrain(subj,cfg)
+%function [avgCoords, elecNames, isLeft, avgVids, subVids]=pial2AvgBrain(subj,cfg)
 %
 % This function takes RAS "pial" coordinates (snapped to pial surface)
 % and maps it to the corresponding location on the pial surface of
@@ -62,7 +62,7 @@ if  ~isfield(cfg,'elecNames'),      elecNames = []; else    elecNames = cfg.elec
 if  ~isfield(cfg,'isLeft'),        isLeft = [];   else    isLeft = cfg.isLeft;      end
 if  ~isfield(cfg,'isSubdural'),     isSubdural = [];   else    isSubdural = cfg.isSubdural;      end
 if  ~isfield(cfg,'rmDepths'),       rmDepths = 1;   else    rmDepths = cfg.rmDepths;      end
-checkCfg(cfg,'pvox2AvgBrain.m');
+checkCfg(cfg,'pial2AvgBrain.m');
 
 
 % FreeSurfer Subject Directory
