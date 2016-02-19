@@ -60,6 +60,7 @@ cp $fsDir/surf/*.inflated $newFolder/surf/.
 cp $fsDir/surf/*.pial $newFolder/surf/.
 cp $fsDir/surf/*.white $newFolder/surf/.
 cp $fsDir/surf/*.sphere $newFolder/surf/.
+cp $fsDir/surf/*.sphere.reg $newFolder/surf/.
 cp $fsDir/surf/*.pial-outer-smoothed $newFolder/surf/.
 
 # zip it!
