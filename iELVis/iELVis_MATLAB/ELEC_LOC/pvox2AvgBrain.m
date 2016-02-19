@@ -139,6 +139,7 @@ end
 avgCoords=zeros(nElec,3);
 avgVids=zeros(nElec,1);
 subVids=zeros(nElec,1);
+plotCtOffset=0; % counts the # of electrodes that have been displayed
 for hemLoop=1:2,
     if hemLoop==1
         % Do left hemisphere elecs
@@ -200,9 +201,9 @@ for hemLoop=1:2,
                 l=light('Position',[-1 0 0]);
                 view(270,0);
             end
-            for a=1:nElec,
-                h=plot3(avgCoords(a,1),avgCoords(a,2),avgCoords(a,3),'r.');
-                clickText(h,elecNames{a});
+            for a=1:nHemElec,
+                h=plot3(avgCoords(a+plotCtOffset,1),avgCoords(a+plotCtOffset,2),avgCoords(a+plotCtOffset,3),'r.');
+                clickText(h,elecNames{a+plotCtOffset});
                 set(h,'markersize',20);
             end
             rotate3d off;
@@ -218,10 +219,10 @@ for hemLoop=1:2,
                 l=light('Position',[-1 0 0]);
                 view(270,0);
             end
-            for a=1:nElec
-                d=subVids(a);
+            for a=1:nHemElec
+                d=subVids(a+plotCtOffset);
                 h=plot3(pial.vert(d,1),pial.vert(d,2),pial.vert(d,3),'r.');
-                clickText(h,elecNames{a});
+                clickText(h,elecNames{a+plotCtOffset});
                 set(h,'markersize',20);
             end
             rotate3d off;
@@ -243,11 +244,12 @@ for hemLoop=1:2,
                 l=light('Position',[1 0 0]);
                 view(90,0);
             end
-            for a=1:nElec
-                h=plot3(avgCoords(a,1),avgCoords(a,2),avgCoords(a,3),'r.');
+            for a=1:nHemElec
+                h=plot3(avgCoords(a+plotCtOffset,1),avgCoords(a+plotCtOffset,2), ...
+                    avgCoords(a+plotCtOffset,3),'r.');
                 %                 clickText(h,[elecNames{a} sprintf(' %.3f %.3f %.3f',avgCoords(a,1), ...
                 %                     avgCoords(a,2),avgCoords(a,3))]);
-                clickText(h,elecNames{a});
+                clickText(h,elecNames{a+plotCtOffset});
                 set(h,'markersize',20);
             end
             rotate3d off;
@@ -263,16 +265,17 @@ for hemLoop=1:2,
                 l=light('Position',[1 0 0]);
                 view(90,0);
             end
-            for a=1:nElec
-                d=subVids(a);
+            for a=1:nHemElec
+                d=subVids(a+plotCtOffset);
                 h=plot3(pial.vert(d,1),pial.vert(d,2),pial.vert(d,3),'r.');
-                clickText(h,elecNames{a});
+                clickText(h,elecNames{a+plotCtOffset});
                 set(h,'markersize',20);
             end
             rotate3d off;
             set(gcf,'name',subj);
             
             drawnow;
+            plotCtOffset=nHemElec+plotCtOffset;
         end
     end
 end
