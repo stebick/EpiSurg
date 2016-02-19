@@ -78,4 +78,5 @@ if printEm,
     print(gcf,'-djpeg','pt001bipolar');
 end 
  
-
+%%
+disp('Script testElecVisualization.m completed successfully.')

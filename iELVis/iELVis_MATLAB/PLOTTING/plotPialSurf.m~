@@ -1027,10 +1027,15 @@ end
 set(hFig,'MenuBar','none','position',[100 190 1000 600],'paperpositionmode','auto');
 
 %% Figure out which hemisphere has electrodes
-elecInfoFname=fullfile(fsDir,fsSub,'elec_recon',[fsSub '.electrodeNames']);
-elecInfo=csv2Cell(elecInfoFname,' ',2);
-leftCoverage=~isempty(findStrInCell('L',elecInfo(:,3)));
-rightCoverage=~isempty(findStrInCell('R',elecInfo(:,3)));
+if isnumeric(elecCoord),
+    leftCoverage=sum(elecCoord(:,4));
+else
+    % Grab electrode info from subject dir
+    elecInfoFname=fullfile(fsDir,fsSub,'elec_recon',[fsSub '.electrodeNames']);
+    elecInfo=csv2Cell(elecInfoFname,' ',2);
+    leftCoverage=~isempty(findStrInCell('L',elecInfo(:,3)));
+    rightCoverage=~isempty(findStrInCell('R',elecInfo(:,3)));
+end
 
 %%
 if isnumeric(elecColorScale)

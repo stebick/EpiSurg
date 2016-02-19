@@ -42,3 +42,6 @@ end
 
 %%
 parcOut=elec2Parc('PT001','Y7');
+
+%%
+disp('Script testAtlases.m completed successfully.')
