@@ -1,5 +1,5 @@
-function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg)
-%function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg)
+function [avgCoords, elecNames, isLeft, avgVids, subVids]=pial2AvgBrain(subj,cfg)
+%function [avgCoords, elecNames, isLeft, avgVids, subVids]=pial2AvgBrain(subj,cfg)
 %
 % This function takes RAS "pial" coordinates (snapped to pial surface)
 % and maps it to the corresponding location on the pial surface of
@@ -13,12 +13,11 @@ function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg
 %            electrode locations on subject and average pial surface.
 %            Click on electrodes to see names. Depth electrodes are not
 %            shown. {default: 1}
-%   elecCoord = N-by-3 numeric array with RAS electrode coordinates. All of 
-%               these electrodes are assumed to be on the cortical surface.
-%               {default: not used; the function looks into the subject's Freesurfer
-%               folder for electrode coordinate file instead}
+%   elecCoord = N-by-3 numeric array with RAS electrode coordinates. 
+%               {default: not used; the function looks into the subject's 
+%               Freesurfer folder for electrode coordinate file instead}
 %   elecNames = cell array of strings with electrode names, corresponding
-%               to the rows of elecCoord. This argument is
+%               to the rows of elecCoord. This argument is required 
 %               if elecCoord is used. {default: not used; the function
 %               looks into the subject's Freesurfer folder for electrode
 %               name file instead}
@@ -38,10 +37,13 @@ function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg
 % Outputs:
 %   avgCoords = Electrode coordinates on FreeSurfer avg brain pial surface
 %                (RAS coordinates)
-%   avgVids   = Subject pial surface vertices corresponding to each electrode
-%   subVids   = Average pial surface vertices corresponding to each electrode
 %   elecNames = Channel names with the participant's name appended to the
 %               beginning (e.g., PT001-Gd1)
+%   isLeft    = N-dimensional binary vector where N is the # of electrodes.
+%               0 indicates that an electrode is on/in the right hemisphere.
+%               1 indicates a left hemisphere location.
+%   avgVids   = Index of subject pial surface vertices corresponding to each electrode
+%   subVids   = Index of average pial surface vertices corresponding to each electrode
 %
 %
 % Author:
@@ -60,7 +62,7 @@ if  ~isfield(cfg,'elecNames'),      elecNames = []; else    elecNames = cfg.elec
 if  ~isfield(cfg,'isLeft'),        isLeft = [];   else    isLeft = cfg.isLeft;      end
 if  ~isfield(cfg,'isSubdural'),     isSubdural = [];   else    isSubdural = cfg.isSubdural;      end
 if  ~isfield(cfg,'rmDepths'),       rmDepths = 1;   else    rmDepths = cfg.rmDepths;      end
-checkCfg(cfg,'pvox2AvgBrain.m');
+checkCfg(cfg,'pial2AvgBrain.m');
 
 
 % FreeSurfer Subject Directory
@@ -137,6 +139,7 @@ end
 avgCoords=zeros(nElec,3);
 avgVids=zeros(nElec,1);
 subVids=zeros(nElec,1);
+plotCtOffset=0; % counts the # of electrodes that have been displayed
 for hemLoop=1:2,
     if hemLoop==1
         % Do left hemisphere elecs
@@ -198,9 +201,9 @@ for hemLoop=1:2,
                 l=light('Position',[-1 0 0]);
                 view(270,0);
             end
-            for a=1:nElec,
-                h=plot3(avgCoords(a,1),avgCoords(a,2),avgCoords(a,3),'r.');
-                clickText(h,elecNames{a});
+            for a=1:nHemElec,
+                h=plot3(avgCoords(a+plotCtOffset,1),avgCoords(a+plotCtOffset,2),avgCoords(a+plotCtOffset,3),'r.');
+                clickText(h,elecNames{a+plotCtOffset});
                 set(h,'markersize',20);
             end
             rotate3d off;
@@ -216,10 +219,10 @@ for hemLoop=1:2,
                 l=light('Position',[-1 0 0]);
                 view(270,0);
             end
-            for a=1:nElec
-                d=subVids(a);
+            for a=1:nHemElec
+                d=subVids(a+plotCtOffset);
                 h=plot3(pial.vert(d,1),pial.vert(d,2),pial.vert(d,3),'r.');
-                clickText(h,elecNames{a});
+                clickText(h,elecNames{a+plotCtOffset});
                 set(h,'markersize',20);
             end
             rotate3d off;
@@ -241,11 +244,12 @@ for hemLoop=1:2,
                 l=light('Position',[1 0 0]);
                 view(90,0);
             end
-            for a=1:nElec
-                h=plot3(avgCoords(a,1),avgCoords(a,2),avgCoords(a,3),'r.');
+            for a=1:nHemElec
+                h=plot3(avgCoords(a+plotCtOffset,1),avgCoords(a+plotCtOffset,2), ...
+                    avgCoords(a+plotCtOffset,3),'r.');
                 %                 clickText(h,[elecNames{a} sprintf(' %.3f %.3f %.3f',avgCoords(a,1), ...
                 %                     avgCoords(a,2),avgCoords(a,3))]);
-                clickText(h,elecNames{a});
+                clickText(h,elecNames{a+plotCtOffset});
                 set(h,'markersize',20);
             end
             rotate3d off;
@@ -261,16 +265,17 @@ for hemLoop=1:2,
                 l=light('Position',[1 0 0]);
                 view(90,0);
             end
-            for a=1:nElec
-                d=subVids(a);
+            for a=1:nHemElec
+                d=subVids(a+plotCtOffset);
                 h=plot3(pial.vert(d,1),pial.vert(d,2),pial.vert(d,3),'r.');
-                clickText(h,elecNames{a});
+                clickText(h,elecNames{a+plotCtOffset});
                 set(h,'markersize',20);
             end
             rotate3d off;
             set(gcf,'name',subj);
             
             drawnow;
+            plotCtOffset=nHemElec+plotCtOffset;
         end
     end
 end
