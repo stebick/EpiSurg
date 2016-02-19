@@ -12,12 +12,12 @@ cfgOut=plotPialSurf('TWH013',cfg);
 
 %% Inflated with elecs and labels
 cfg=[];
-cfg.view='r';
+cfg.view='l';
 cfg.figId=2;
 cfg.surfType='inflated';
 cfg.showLabels='y';
 cfg.title=[];
-cfgOut=plotPialSurf('NiAs',cfg);
+cfgOut=plotPialSurf('PT001',cfg);
 
 
 %% Plain Omni

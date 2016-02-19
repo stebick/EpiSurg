@@ -12,19 +12,19 @@ function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg
 %   plotEm = 1 or 0.  If nonzero, a figure is created illustrating
 %            electrode locations on subject and average pial surface.
 %            Click on electrodes to see names. Depth electrodes are not
-%            shown.  Code assumes the string 'depth' is part of the name of
-%            all depth electrodes. {default: 1}
-%   elecCoord = N-by-3 numeric array with RAS electrode coordinates. {default:
-%               not used; the function looks into the subject's Freesurfer
-%               folder for electrode coordinate file instead}
+%            shown. {default: 1}
+%   elecCoord = N-by-3 numeric array with RAS electrode coordinates. 
+%               {default: not used; the function looks into the subject's 
+%               Freesurfer folder for electrode coordinate file instead}
 %   elecNames = cell array of strings with electrode names, corresponding
-%               to the rows of elecCoord. {default: not used; the function
+%               to the rows of elecCoord. This argument is required 
+%               if elecCoord is used. {default: not used; the function
 %               looks into the subject's Freesurfer folder for electrode
 %               name file instead}
 %   isLeft    = N-dimensional binary vector where N is the # of electrodes.
 %               0 indicates that an electrode is on/in the right hemisphere.
 %               1 indicates a left hemisphere location. This argument is
-%               required if elecNames is used. Otherwise this information
+%               required if elecCoord is used. Otherwise this information
 %               is read from the participant's electrodeNames file.
 %   isSubdural= N-dimensional binary vector where N is the # of electrodes.
 %               0 indicates that an electrode is a depth electrode. 1
@@ -37,9 +37,13 @@ function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg
 % Outputs:
 %   avgCoords = Electrode coordinates on FreeSurfer avg brain pial surface
 %                (RAS coordinates)
-%   avgVids   = Subject pial surface vertices corresponding to each electrode
-%   subVids   = Average pial surface vertices corresponding to each electrode
-%   elecNames = Channel names
+%   elecNames = Channel names with the participant's name appended to the
+%               beginning (e.g., PT001-Gd1)
+%   isLeft    = N-dimensional binary vector where N is the # of electrodes.
+%               0 indicates that an electrode is on/in the right hemisphere.
+%               1 indicates a left hemisphere location.
+%   avgVids   = Index of subject pial surface vertices corresponding to each electrode
+%   subVids   = Index of average pial surface vertices corresponding to each electrode
 %
 %
 % Author:
@@ -271,4 +275,9 @@ for hemLoop=1:2,
             drawnow;
         end
     end
+end
+
+%% Add subject name as prefix to electrode names:
+for a=1:nElec,
+   elecNames{a}=[subj '-' elecNames{a}];
 end
