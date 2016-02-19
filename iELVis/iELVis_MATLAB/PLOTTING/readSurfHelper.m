@@ -1,5 +1,5 @@
-function cort=read_surf_helper(surf_fname)
-%function cort=read_surf_helper(surf_fname)
+function cort=readSurfHelper(surf_fname)
+%function cort=readSurfHelper(surf_fname)
 %
 % Same as freesurfer's read_surf.m but adds a 1 to cort.tri if needed
 %

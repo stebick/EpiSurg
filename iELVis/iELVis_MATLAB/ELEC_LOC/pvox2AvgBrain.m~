@@ -13,11 +13,12 @@ function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg
 %            electrode locations on subject and average pial surface.
 %            Click on electrodes to see names. Depth electrodes are not
 %            shown. {default: 1}
-%   elecCoord = N-by-3 numeric array with RAS electrode coordinates. 
-%               {default: not used; the function looks into the subject's 
-%               Freesurfer folder for electrode coordinate file instead}
+%   elecCoord = N-by-3 numeric array with RAS electrode coordinates. All of 
+%               these electrodes are assumed to be on the cortical surface.
+%               {default: not used; the function looks into the subject's Freesurfer
+%               folder for electrode coordinate file instead}
 %   elecNames = cell array of strings with electrode names, corresponding
-%               to the rows of elecCoord. This argument is required 
+%               to the rows of elecCoord. This argument is
 %               if elecCoord is used. {default: not used; the function
 %               looks into the subject's Freesurfer folder for electrode
 %               name file instead}
@@ -37,13 +38,10 @@ function [avgCoords, elecNames, isLeft, avgVids, subVids]=pvox2AvgBrain(subj,cfg
 % Outputs:
 %   avgCoords = Electrode coordinates on FreeSurfer avg brain pial surface
 %                (RAS coordinates)
+%   avgVids   = Subject pial surface vertices corresponding to each electrode
+%   subVids   = Average pial surface vertices corresponding to each electrode
 %   elecNames = Channel names with the participant's name appended to the
 %               beginning (e.g., PT001-Gd1)
-%   isLeft    = N-dimensional binary vector where N is the # of electrodes.
-%               0 indicates that an electrode is on/in the right hemisphere.
-%               1 indicates a left hemisphere location.
-%   avgVids   = Index of subject pial surface vertices corresponding to each electrode
-%   subVids   = Index of average pial surface vertices corresponding to each electrode
 %
 %
 % Author:

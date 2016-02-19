@@ -3,22 +3,20 @@ function infCoor=pial2InfBrain(fsSub,cfg)
 %
 % This function takes the "pial" coordinates (snapped to pial surface) and:
 % 1. finds the closest vertex on the pial surface
-% 2. maps that vertex to the inflated brain surface for that fsSubect
+% 2. maps that vertex to the inflated brain surface
 %
 % Inputs:
-%   fsSub = FreeSurfer fsSubect name
+%   fsSub = FreeSurfer subject name
 %
-% Optional Inputs: passed as fields in a configuration structure
+% Optional Inputs: passed as fields in a cfg structure
 %   elecCoord = N-by-4 numeric array with electrode RAS coordinates. The 
 %               fourth column is binary (1=Left hem elec) {default:
 %               not used; the function looks into the fsSubect's Freesurfer
-%               folder for electrode coordinate file instead}
+%               folder for electrode coordinate files instead}
 %   elecNames = cell array of strings with electrode names, corresponding
 %               to the rows of elecCoord. {default: not used; the function
 %               looks into the fsSubect's Freesurfer folder for electrode
 %               name file instead}
-%   elecHem   = cell array of length N that indicates which hemisphere each
-%               electrode lies in 'R' or 'L'
 %   fsurfsubdir = path to the Freesurfer fsSubect directory. Necessary if
 %                 running MATLAB on Windows. {default: taken from shell}
 %
@@ -38,14 +36,14 @@ function infCoor=pial2InfBrain(fsSub,cfg)
 % parse input parameters in cfg structure and set defaults
 if  ~isfield(cfg,'elecCoord'),      elecCoord = []; else    elecCoord = cfg.elecCoord;      end
 if  ~isfield(cfg,'elecNames'),      elecNames = []; else    elecNames = cfg.elecNames;      end
-if  ~isfield(cfg,'elecHem'),        elecHem = [];   else    elecHem = cfg.elecNames;      end
 if  ~isfield(cfg,'fsurfsubdir'),    fs_dir = [];    else    fs_dir = cfg.fsurfsubdir;       end
+%if  ~isfield(cfg,'elecHem'),        elecHem = [];   else    elecHem = cfg.elecNames;      end
 
 % Get location of FreeSurfer directories
 if isempty(fs_dir)
     fs_dir=getFsurfSubDir();
 end
-sub_dir=[fs_dir '/' fsSub];
+sub_dir=fullfile(fs_dir,fsSub);
 
 
 %% get electrode coordinates
@@ -69,12 +67,12 @@ if isempty(elecCoord) % no electrode coordinates have been passed in the functio
     rightIds=find(cellfun(@(x) strcmpi(x,'R'),elecInfo(:,3)));
 else % numeric electrode coordinates have been passed in the function call
     RAS_coor=elecCoord(:,1:3);
-    %     leftIds=find(elecCoord(:,4));
-    %     rightIds=find(~elecCoord(:,4));
-    leftIds=find(cellfun(@(x) strcmpi(x,'L'),elecHem));
-    rightIds=find(cellfun(@(x) strcmpi(x,'R'),elecHem));
+    leftIds=find(elecCoord(:,4));
+    rightIds=find(~elecCoord(:,4));
+    nChan=size(elecCoord,1);
+    %     leftIds=find(cellfun(@(x) strcmpi(x,'L'),elecHem));
+    %     rightIds=find(cellfun(@(x) strcmpi(x,'R'),elecHem));
     %labels=elecNames;
-    nChan=length(elecHem);
     elecInfo=[];
 end
 
