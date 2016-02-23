@@ -1,5 +1,9 @@
 function [map, limits, cmap]=vals2Colormap(vals,type,cmap,minmax)
+<<<<<<< HEAD
 %function [map, limits]=vals2Colormap(vals,type,cmap,minmax)
+=======
+%function [map, limits, cmap]=vals2Colormap(vals,type,cmap,minmax)
+>>>>>>> epiSurg/master
 % creates colormap (i.e., colorscale)
 %
 % Required Inputs:
@@ -121,7 +125,11 @@ elseif strcmpi(type,'minmax')
     nVals=length(vals);
     vals_col=zeros(nVals,1);
     for myidx = 1:nVals,
+<<<<<<< HEAD
         vals_col(myidx) = nearest(cval,vals(myidx))';
+=======
+        vals_col(myidx) = nearestValId(cval,vals(myidx))';
+>>>>>>> epiSurg/master
     end
     map=rgb_vals(vals_col,:);
     

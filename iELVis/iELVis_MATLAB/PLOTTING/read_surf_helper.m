@@ -1,14 +1,7 @@
-<<<<<<< HEAD
 function cort=read_surf_helper(surf_fname)
 %function cort=read_surf_helper(surf_fname)
-=======
-function cort=readSurfHelper(surf_fname)
-%function cort=readSurfHelper(surf_fname)
->>>>>>> epiSurg/master
 %
-% Same as freesurfer's read_surf.m but adds a 1 to cort.tri if needed
-%
-% -David Groppe
+% David Groppe
 
 [cort.vert cort.tri]=read_surf(surf_fname);
 if min(min(cort.tri))<1

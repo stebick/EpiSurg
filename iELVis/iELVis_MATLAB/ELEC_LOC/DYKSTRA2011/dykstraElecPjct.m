@@ -66,6 +66,11 @@ if nargin<2,
    minimizeChange=1; 
 end
 
+<<<<<<< HEAD
+=======
+fsDir=getFsurfSubDir();
+
+>>>>>>> epiSurg/master
 %%
 [elecMatrix, elecLabels, elecRgb, elecPairs, elecPresent]=mgrid2matlab(sub);
 
@@ -98,11 +103,18 @@ end
 
 
 %% Start diary
+<<<<<<< HEAD
 elecReconPath=sprintf('/Applications/freesurfer/subjects/%s/elec_recon/',sub);
 
 diary_file = [elecReconPath 'localization_process_' datestr(now,29) '.log'];
 fprintf('Recording command line output in file: \n%s\n',diary_file);
 diary on;
+=======
+elecReconPath=fullfile(fsDir,sub,'elec_recon');
+
+diary_file = fullfile(elecReconPath,['localization_process_' datestr(now,29) '.log']);
+fprintf('Recording command line output in file: \n%s\n',diary_file);
+>>>>>>> epiSurg/master
 diary(diary_file)
 
 fprintf('\n================================================================\n');
@@ -154,7 +166,12 @@ if sum(jit)
         sum(jit));
 end
 
+<<<<<<< HEAD
 surfPath=sprintf('/Applications/freesurfer/subjects/%s/surf/',sub);
+=======
+%surfPath=sprintf('/Applications/freesurfer/subjects/%s/surf/',sub);
+surfPath=fullfile(fsDir,sub,'surf');
+>>>>>>> epiSurg/master
 for hemLoop=0:1,
     hemIds=find(elecHem==hemLoop);
     
@@ -167,7 +184,11 @@ for hemLoop=0:1,
         
         %% Load Dural Surface
         surftype='pial-outer-smoothed';
+<<<<<<< HEAD
         [surf.vert surf.tri]=read_surf([surfPath  hem 'h.' surftype]);
+=======
+        [surf.vert surf.tri]=read_surf(fullfile(surfPath,[hem 'h.' surftype]));
+>>>>>>> epiSurg/master
         
         %% Brain Shift Correction
         useIds=intersect(hemIds,sduralIds);
@@ -191,7 +212,11 @@ end
 %% Save the electrodes locations and labels as text files
 
 %%%%%% Output Electrode Names to Text Files %%%%%%%%%
+<<<<<<< HEAD
 fnameLabels = [elecReconPath sub '.electrodeNames'];
+=======
+fnameLabels=fullfile(elecReconPath,[sub '.electrodeNames']);
+>>>>>>> epiSurg/master
 fprintf('Saving electrode labels to: %s\n',fnameLabels);
 fidLabels=fopen(fnameLabels,'w');
 fprintf(fidLabels,'%s\n',datestr(now));
@@ -208,7 +233,11 @@ fclose(fidLabels);
 
 %%%%%% Output RAS Coordinates to Text Files %%%%%%%%%
 % CT RAS COORDINATES
+<<<<<<< HEAD
 fnameCtRAS = [elecReconPath sub '.CT'];
+=======
+fnameCtRAS = fullfile(elecReconPath,[ sub '.CT']);
+>>>>>>> epiSurg/master
 fprintf('Saving CT RAS electrode locations to: %s\n',fnameCtRAS);
 fidCt=fopen(fnameCtRAS,'w');
 fprintf(fidCt,'%s\n',datestr(now));
@@ -219,7 +248,11 @@ end
 fclose(fidCt);
 
 % Dural RAS COORDINATES
+<<<<<<< HEAD
 fnameDuralRAS = [elecReconPath sub '.DURAL'];
+=======
+fnameDuralRAS = fullfile(elecReconPath,[sub '.DURAL']);
+>>>>>>> epiSurg/master
 fprintf('Saving Dural RAS electrode locations to: %s\n',fnameDuralRAS);
 fidDural=fopen(fnameDuralRAS,'w');
 fprintf(fidDural,'%s\n',datestr(now));
@@ -230,7 +263,11 @@ end
 fclose(fidDural);
 
 % Pial RAS COORDINATES
+<<<<<<< HEAD
 fnamePialRAS = [elecReconPath sub '.PIAL'];
+=======
+fnamePialRAS = fullfile(elecReconPath,[sub '.PIAL']);
+>>>>>>> epiSurg/master
 fprintf('Saving Pial RAS electrode locations to: %s\n',fnamePialRAS);
 fidPial=fopen(fnamePialRAS,'w');
 fprintf(fidPial,'%s\n',datestr(now));
@@ -244,7 +281,11 @@ fclose(fidPial);
 % Dural VOX COORDINATES
 RAS2VOX=inv(VOX2RAS);
 duralVOX=(RAS2VOX*[duralRAS'; ones(1, nElec)])';
+<<<<<<< HEAD
 fnameDuralVOX = [elecReconPath sub '.DURALVOX'];
+=======
+fnameDuralVOX = fullfile(elecReconPath,[sub '.DURALVOX']);
+>>>>>>> epiSurg/master
 fprintf('Saving dural VOX electrode locations to: %s\n',fnameDuralVOX);
 fidDuralVox=fopen(fnameDuralVOX,'w');
 fprintf(fidDuralVox,'%s\n',datestr(now));
@@ -256,7 +297,11 @@ fclose(fidDuralVox);
 
 % Pial VOX COORDINATES
 pialVOX=(RAS2VOX*[pialRAS'; ones(1, nElec)])';
+<<<<<<< HEAD
 fnamePialVOX = [elecReconPath sub '.PIALVOX'];
+=======
+fnamePialVOX = fullfile(elecReconPath,[sub '.PIALVOX']);
+>>>>>>> epiSurg/master
 fprintf('Saving pial VOX electrode locations to: %s\n',fnamePialVOX);
 fidPialVox=fopen(fnamePialVOX,'w');
 fprintf(fidPialVox,'%s\n',datestr(now));
@@ -268,7 +313,11 @@ fclose(fidPialVox);
 
 %% Created text file of Inflated Pial Surface Coordinates (relies on just created text files) 
 infRAS=pial2InfBrain(sub,[]);
+<<<<<<< HEAD
 fnameInfRAS = [elecReconPath sub '.INF'];
+=======
+fnameInfRAS = fullfile(elecReconPath,[sub '.INF']);
+>>>>>>> epiSurg/master
 fprintf('Saving inflated pial RAS electrode locations to: %s\n',fnameInfRAS);
 fidInf=fopen(fnameInfRAS,'w');
 fprintf(fidInf,'%s\n',datestr(now));
@@ -279,6 +328,7 @@ end
 fclose(fidInf);
 
 
+<<<<<<< HEAD
 %% Create text file of fsaverage coordinates
 % future work? ??
 
@@ -287,6 +337,8 @@ fclose(fidInf);
 % future work? ??
 
 
+=======
+>>>>>>> epiSurg/master
 %% Plot results to double check
 plotCtVsDural(sub,1,1);
 

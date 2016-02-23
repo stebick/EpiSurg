@@ -20,7 +20,11 @@ fi
 #echo Subject $1
 
 sub=$1
+<<<<<<< HEAD
 fsDir=$SUBJECTS_DIR$sub
+=======
+fsDir=$SUBJECTS_DIR/$sub
+>>>>>>> epiSurg/master
 if [ ! -d $fsDir ]; then
   echo
   echo "... ${fsDir} is not a directory."
@@ -36,12 +40,20 @@ if [ ! -f  $2 ]; then
  exit 2
 fi
 
+<<<<<<< HEAD
 elecReconPath=$SUBJECTS_DIR$sub/elec_recon
+=======
+elecReconPath=$SUBJECTS_DIR/$sub/elec_recon
+>>>>>>> epiSurg/master
 echo 'Creating directory ' $elecReconPath
 mkdir $elecReconPath
 
 echo 'Creating T1.nii.gz in elec_recon folder for coregistration.'
+<<<<<<< HEAD
 mriPath=$SUBJECTS_DIR$sub/mri
+=======
+mriPath=$SUBJECTS_DIR/$sub/mri
+>>>>>>> epiSurg/master
 mri_convert $mriPath/T1.mgz $elecReconPath/T1.nii.gz
 
 echo 'Creating brainmask.nii.gz in elec_recon folder for use with BioImageSuite later.'

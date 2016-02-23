@@ -1,9 +1,5 @@
 %---------------------------------------------------
-<<<<<<< HEAD
 % FUNCTION: Y = get_loc_snap_mgh(electrodes,surface_path,side,surftype)
-=======
-% FUNCTION: Y = snap2surf(electrodes,surface_path,side,surftype)
->>>>>>> epiSurg/master
 % INPUTS:   
 %           electrodes = Nx3 matrix of original RAS coordinates of electrodes
 %           
@@ -26,7 +22,7 @@
 % last updated 2010.03.31
 %--------------------------------------------------- 
 
-function Y = snap2surf(electrodes,surface_path,side,surftype)
+function Y = get_loc_snap_mgh(electrodes,surface_path,side,surftype)
 %snaps "best guess" of electrodes to template
 
 

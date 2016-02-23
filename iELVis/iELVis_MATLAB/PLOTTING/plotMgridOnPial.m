@@ -118,7 +118,11 @@ for hemLoop=1:2,
         for fLoop=1:2,
             cfg=[];
             cfg.view=[hem 'omni'];
+<<<<<<< HEAD
             cfg.figId=fLoop+(hemLoop-1)*10;
+=======
+            %cfg.figId=fLoop+(hemLoop-1)*10;
+>>>>>>> epiSurg/master
             cfg.elecColors=elecRgb(useIds,:);
             cfg.elecNames=elecnames(useIds);
             cfg.elecCbar='n';
@@ -170,7 +174,11 @@ for hemLoop=1:2,
                     figFname=sprintf('%s%sMgridElecDK',fsub,hemLong);
                 end
                 outFname=fullfile(erPath,'PICS',figFname);
+<<<<<<< HEAD
                 print(fLoop,outFname,'-djpeg');
+=======
+                print(gcf,outFname,'-djpeg');
+>>>>>>> epiSurg/master
             end
         end
     end

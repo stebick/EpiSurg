@@ -1,5 +1,9 @@
 %  elec2Parc() - Returns the name of the nearest brain area according
+<<<<<<< HEAD
 %                to FreeSurfer-compatible parcellations.
+=======
+%                to FreeSurfer pial surface-compatible parcellations.
+>>>>>>> epiSurg/master
 %
 % Usage:
 %  >>elecParc=elec2Parc(subj,atlas);

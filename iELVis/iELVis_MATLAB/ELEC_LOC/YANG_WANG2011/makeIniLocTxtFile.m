@@ -14,10 +14,18 @@ function makeIniLocTxtFile(fsSub)
 
 fsDir=getFsurfSubDir();
 
+<<<<<<< HEAD
 subPath = sprintf('%s/%s',fsDir,fsSub);
 elecReconPath=[subPath '/elec_recon/'];
 postimpLocFname=sprintf('%s%sPostimpLoc.txt',elecReconPath,fsSub);
 
+=======
+% subPath = sprintf('%s/%s',fsDir,fsSub);
+% elecReconPath=[subPath '/elec_recon/'];
+subPath = fullfile(fsDir,fsSub);
+elecReconPath=fullfile(subPath,'elec_recon');
+postimpLocFname=fullfile(elecReconPath,[fsSub 'PostimpLoc.txt']);
+>>>>>>> epiSurg/master
 
 %% space delimited from mgrid
 [eCoords, elecLabels, elecRgb, elecPairs, elecPresent]=mgrid2matlab(fsSub);

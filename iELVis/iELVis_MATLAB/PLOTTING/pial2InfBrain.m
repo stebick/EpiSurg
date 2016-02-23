@@ -3,6 +3,7 @@ function infCoor=pial2InfBrain(fsSub,cfg)
 %
 % This function takes the "pial" coordinates (snapped to pial surface) and:
 % 1. finds the closest vertex on the pial surface
+<<<<<<< HEAD
 % 2. maps that vertex to the inflated brain surface for that fsSubect
 %
 % Inputs:
@@ -13,12 +14,27 @@ function infCoor=pial2InfBrain(fsSub,cfg)
 %               fourth column is binary (1=Left hem elec) {default:
 %               not used; the function looks into the fsSubect's Freesurfer
 %               folder for electrode coordinate file instead}
+=======
+% 2. maps that vertex to the inflated brain surface
+%
+% Inputs:
+%   fsSub = FreeSurfer subject name
+%
+% Optional Inputs: passed as fields in a cfg structure
+%   elecCoord = N-by-4 numeric array with electrode RAS coordinates. The 
+%               fourth column is binary (1=Left hem elec) {default:
+%               not used; the function looks into the fsSubect's Freesurfer
+%               folder for electrode coordinate files instead}
+>>>>>>> epiSurg/master
 %   elecNames = cell array of strings with electrode names, corresponding
 %               to the rows of elecCoord. {default: not used; the function
 %               looks into the fsSubect's Freesurfer folder for electrode
 %               name file instead}
+<<<<<<< HEAD
 %   elecHem   = cell array of length N that indicates which hemisphere each
 %               electrode lies in 'R' or 'L'
+=======
+>>>>>>> epiSurg/master
 %   fsurfsubdir = path to the Freesurfer fsSubect directory. Necessary if
 %                 running MATLAB on Windows. {default: taken from shell}
 %
@@ -38,21 +54,35 @@ function infCoor=pial2InfBrain(fsSub,cfg)
 % parse input parameters in cfg structure and set defaults
 if  ~isfield(cfg,'elecCoord'),      elecCoord = []; else    elecCoord = cfg.elecCoord;      end
 if  ~isfield(cfg,'elecNames'),      elecNames = []; else    elecNames = cfg.elecNames;      end
+<<<<<<< HEAD
 if  ~isfield(cfg,'elecHem'),        elecHem = [];   else    elecHem = cfg.elecNames;      end
 if  ~isfield(cfg,'fsurfsubdir'),    fs_dir = [];    else    fs_dir = cfg.fsurfsubdir;       end
+=======
+if  ~isfield(cfg,'fsurfsubdir'),    fs_dir = [];    else    fs_dir = cfg.fsurfsubdir;       end
+%if  ~isfield(cfg,'elecHem'),        elecHem = [];   else    elecHem = cfg.elecNames;      end
+>>>>>>> epiSurg/master
 
 % Get location of FreeSurfer directories
 if isempty(fs_dir)
     fs_dir=getFsurfSubDir();
 end
+<<<<<<< HEAD
 sub_dir=[fs_dir '/' fsSub];
+=======
+sub_dir=fullfile(fs_dir,fsSub);
+>>>>>>> epiSurg/master
 
 
 %% get electrode coordinates
 if isempty(elecCoord) % no electrode coordinates have been passed in the function call:
     % use the original code looking for .PIAL files
+<<<<<<< HEAD
     pialFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.PIAL'];
     %pialFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.DURAL'];
+=======
+    %pialFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.PIAL'];
+    pialFname=fullfile(fs_dir,fsSub,'elec_recon',[fsSub '.PIAL']);
+>>>>>>> epiSurg/master
     elecCoordCsv=csv2Cell(pialFname,' ',2);
     nChan=size(elecCoordCsv,1);
     RAS_coor=zeros(nChan,3);
@@ -61,19 +91,33 @@ if isempty(elecCoord) % no electrode coordinates have been passed in the functio
             RAS_coor(csvLoopA,csvLoopB)=str2num(elecCoordCsv{csvLoopA,csvLoopB});
         end
     end
+<<<<<<< HEAD
     elecInfoFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.electrodeNames'];
+=======
+    %elecInfoFname=[fs_dir '/' fsSub '/elec_recon/' fsSub '.electrodeNames'];
+    elecInfoFname=fullfile(fs_dir,fsSub,'elec_recon',[fsSub '.electrodeNames']);
+>>>>>>> epiSurg/master
     elecInfo=csv2Cell(elecInfoFname,' ',2);
     %labels=elecInfo(:,1);
     leftIds=find(cellfun(@(x) strcmpi(x,'L'),elecInfo(:,3)));
     rightIds=find(cellfun(@(x) strcmpi(x,'R'),elecInfo(:,3)));
 else % numeric electrode coordinates have been passed in the function call
     RAS_coor=elecCoord(:,1:3);
+<<<<<<< HEAD
     %     leftIds=find(elecCoord(:,4));
     %     rightIds=find(~elecCoord(:,4));
     leftIds=find(cellfun(@(x) strcmpi(x,'L'),elecHem));
     rightIds=find(cellfun(@(x) strcmpi(x,'R'),elecHem));
     %labels=elecNames;
     nChan=length(elecHem);
+=======
+    leftIds=find(elecCoord(:,4));
+    rightIds=find(~elecCoord(:,4));
+    nChan=size(elecCoord,1);
+    %     leftIds=find(cellfun(@(x) strcmpi(x,'L'),elecHem));
+    %     rightIds=find(cellfun(@(x) strcmpi(x,'R'),elecHem));
+    %labels=elecNames;
+>>>>>>> epiSurg/master
     elecInfo=[];
 end
 
@@ -93,11 +137,21 @@ for hemLoop=1:2,
     end
     
     %% Read Sub Pial Surf
+<<<<<<< HEAD
     fname=[sub_dir '/surf/' hem 'h.pial'];
     pial=readSurfHelper(fname);
     
     %% Read Sub Inflated Surf
     fname=[sub_dir '/surf/' hem 'h.inflated'];
+=======
+    %fname=[sub_dir '/surf/' hem 'h.pial'];
+    fname=fullfile(sub_dir,'surf',[hem 'h.pial']);
+    pial=readSurfHelper(fname);
+    
+    %% Read Sub Inflated Surf
+    %fname=[sub_dir '/surf/' hem 'h.inflated'];
+    fname=fullfile(sub_dir,'surf',[hem 'h.inflated']);
+>>>>>>> epiSurg/master
     inflated=readSurfHelper(fname);
     
     %% Get vertices for electrodes on sub's pial surface

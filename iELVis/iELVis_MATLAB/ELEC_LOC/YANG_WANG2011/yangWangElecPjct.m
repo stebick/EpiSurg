@@ -47,8 +47,13 @@ function yangWangElecPjct(sub)
 % get the subject info
 fsDir=getFsurfSubDir();
 
+<<<<<<< HEAD
 subPath = sprintf('%s%s',fsDir,sub);
 elecReconPath=[subPath '/elec_recon/'];
+=======
+subPath = fullfile(fsDir,sub);
+elecReconPath=fullfile(subPath,'elec_recon');
+>>>>>>> epiSurg/master
 
 if ~isdir(subPath)
     error('Freesurfer folder %s not found',subPath);
@@ -57,7 +62,11 @@ end
 
 %% read the inital text file with postimplant electrode coordinates
 % Note coordinates are in voxels (NOT RAS)
+<<<<<<< HEAD
 postimpLocFname=sprintf('%s%sPostimpLoc.txt',elecReconPath,sub);
+=======
+postimpLocFname=fullfile(elecReconPath,[sub 'PostimpLoc.txt']);
+>>>>>>> epiSurg/master
 if ~exist(postimpLocFname,'file')
     error('File %s does NOT exist.',postimpLocFname);
 end
@@ -71,7 +80,11 @@ end
 % dep_img_file='T1.nii.gz';
 
 %% Start diary
+<<<<<<< HEAD
 diary_file = [elecReconPath 'localization_process_' datestr(now,29) '.log'];
+=======
+diary_file=fullfile(elecReconPath,['localization_process_' datestr(now,29) '.log']);
+>>>>>>> epiSurg/master
 fprintf('Recording command line output in file: \n%s\n',diary_file);
 diary on;
 diary(diary_file)
@@ -83,7 +96,11 @@ fprintf('Initial location text file: %s\n',postimpLocFname);
 
 
 %% Read in preop T1
+<<<<<<< HEAD
 t1Fname=[elecReconPath '/T1.nii.gz'];
+=======
+t1Fname=fullfile(elecReconPath,'T1.nii.gz');
+>>>>>>> epiSurg/master
 hdr = ntools_elec_load_nifti(t1Fname,1);
 if ~isequal(hdr.pixdim(2),hdr.pixdim(3),hdr.pixdim(4))
     warning('T1 voxel mm dimensions not equal. This will affect the accuracy of distance calculation');
@@ -198,6 +215,10 @@ for hemLoop=1:2,
             
             for a=1:nGridType,
                 % For each grid identify the dimensions
+<<<<<<< HEAD
+=======
+                disp('If grids have unequal dimensions, rows is probably the smaller dimension.');
+>>>>>>> epiSurg/master
                 nRow=input(sprintf('How many rows does %s have? (default-> 8): ',gridNames{a}));
                 if isempty(nRow),
                     nRow=8;
@@ -267,7 +288,11 @@ for hemLoop=1:2,
                 pialRAS(ct,b)=elec_strip{a,b+2};
             end
         end
+<<<<<<< HEAD
         pialRAS = snap2surf(pialRAS,[subPath '/surf'],hem(1),'pial');
+=======
+        pialRAS = snap2surf(pialRAS,fullfile(subPath,'surf'),hem(1),'pial');
+>>>>>>> epiSurg/master
         
         % add depth coords, which are not snapped to surface
         for a=1:nDepthThisHem,
@@ -325,7 +350,11 @@ for hemLoop=1:2,
         
         % RAS COORDINATES
         % Dural
+<<<<<<< HEAD
         fnameDuralRAS = [elecReconPath sub '.DURAL'];
+=======
+        fnameDuralRAS = fullfile(elecReconPath,[sub '.DURAL']);
+>>>>>>> epiSurg/master
         fprintf('Saving dural RAS electrode locations to: %s\n',fnameDuralRAS);
         if isempty(fidDural)
             fidDural=fopen(fnameDuralRAS,'w');
@@ -337,7 +366,11 @@ for hemLoop=1:2,
         end
         
         % Pial
+<<<<<<< HEAD
         fnamePialRAS = [elecReconPath sub '.PIAL'];
+=======
+        fnamePialRAS = fullfile(elecReconPath,[sub '.PIAL']);
+>>>>>>> epiSurg/master
         fprintf('Saving pial RAS electrode locations to: %s\n',fnamePialRAS);
         if isempty(fidPial)
             fidPial=fopen(fnamePialRAS,'w');
@@ -349,7 +382,11 @@ for hemLoop=1:2,
         end
         
         % CT (i.e., uncorrected for brain shift)
+<<<<<<< HEAD
         fnameCtRAS = [elecReconPath sub '.CT'];
+=======
+        fnameCtRAS = fullfile(elecReconPath,[sub '.CT']);
+>>>>>>> epiSurg/master
         fprintf('Saving CT RAS electrode locations to: %s\n',fnameCtRAS);
         if isempty(fidCT)
             fidCT=fopen(fnameCtRAS,'w');
@@ -361,7 +398,11 @@ for hemLoop=1:2,
         end
         
         % Electrode names 
+<<<<<<< HEAD
         fnameLabels = [elecReconPath sub '.electrodeNames'];
+=======
+        fnameLabels = fullfile(elecReconPath,[sub '.electrodeNames']);
+>>>>>>> epiSurg/master
         fprintf('Saving electrode labels to: %s\n',fnameLabels);
         if isempty(fidLabels)
             fidLabels=fopen(fnameLabels,'w');
@@ -375,7 +416,11 @@ for hemLoop=1:2,
         % VOX COORDINATES
         RAS2VOX=inv(VOX2RAS);
         duralVOX=(RAS2VOX*[duralRAS'; ones(1, nElecThisHem)])';
+<<<<<<< HEAD
         fnameDuralVOX = [elecReconPath sub '.DURALVOX'];
+=======
+        fnameDuralVOX = fullfile(elecReconPath,[sub '.DURALVOX']);
+>>>>>>> epiSurg/master
         fprintf('Saving dural VOX electrode locations to: %s\n',fnameDuralVOX);
         if isempty(fidDuralVox)
             fidDuralVox=fopen(fnameDuralVOX,'w');
@@ -387,7 +432,11 @@ for hemLoop=1:2,
         end
         
         pialVOX=(RAS2VOX*[pialRAS'; ones(1, nElecThisHem)])';
+<<<<<<< HEAD
         fnamePialVOX = [elecReconPath sub '.PIALVOX'];
+=======
+        fnamePialVOX = fullfile(elecReconPath,[sub '.PIALVOX']);
+>>>>>>> epiSurg/master
         fprintf('Saving pial VOX electrode locations to: %s\n',fnamePialVOX);
         if isempty(fidPialVox)
             fidPialVox=fopen(fnamePialVOX,'w');
@@ -412,7 +461,11 @@ fclose(fidPialVox);
 
 %% Created text file of Inflated Pial Surface Coordinates (relies on just closed text files) 
 infRAS=pial2InfBrain(sub,[]);
+<<<<<<< HEAD
 fnameInfRAS = [elecReconPath sub '.INF'];
+=======
+fnameInfRAS = fullfile(elecReconPath,[sub '.INF']);
+>>>>>>> epiSurg/master
 fprintf('Saving inflated pial RAS electrode locations to: %s\n',fnameInfRAS);
 fidInf=fopen(fnameInfRAS,'w');
 fprintf(fidInf,'%s\n',datestr(now));
@@ -431,7 +484,11 @@ plotCtVsDural(sub,1,1);
 if 0
     % DG disabled this as I don't know how useful it is
     %fname_bin = [PathName,Sname,'_elec_bin_T1_' datestr(now,29), '.nii.gz'];
+<<<<<<< HEAD
     fname_bin = [elecReconPath sub '_elec_bin_T1_' datestr(now,29), '.nii.gz'];
+=======
+    fname_bin = fullfile(elecReconPath,[sub '_elec_bin_T1_' datestr(now,29), '.nii.gz']);
+>>>>>>> epiSurg/master
     fprintf('Saving electrode locations as binary nii file: %s\n',fname_bin);
     elec_vox = ntools_elec_savebin([x y z],hdr,fname_bin);
 end
@@ -440,7 +497,11 @@ end
 if 0
     elec_mni = ntools_elec_dartel_warp(fname_bin,[dep_img_path,dep_img_file]);
     %fname_mni = [PathName Sname '_coor_MNI_' datestr(now,29) '.txt'];
+<<<<<<< HEAD
     fname_mni = [elecReconPath sub '_coor_MNI_' datestr(now,29) '.txt'];
+=======
+    fname_mni = fullfile(elecReconPath,[sub '_coor_MNI_' datestr(now,29) '.txt']);
+>>>>>>> epiSurg/master
     ntools_elec_savetxt(fname_mni,[name num2cell(elec_mni) label]);
 end
 
